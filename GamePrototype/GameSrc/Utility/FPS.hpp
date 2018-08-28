@@ -1,5 +1,6 @@
 #pragma once
 #include <atlbase.h>
+#include <memory>
 /*! @class FPS
 *   @brief FPS‚ðŒÅ’è‚·‚é‚½‚ß‚ÌƒNƒ‰ƒX‚Å‚·
 */
@@ -26,6 +27,7 @@ private:
 		QueryPerformanceFrequency(&frequency_);
 		return frequency_;
 	}
+	
 public:
 	FPS() :
 		frameCount(0),

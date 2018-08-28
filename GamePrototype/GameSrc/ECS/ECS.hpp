@@ -47,7 +47,7 @@ namespace ECS
 
 		}
 	public:
-		Entity * white;
+		Entity * entity;
 		virtual void Initialize() {};
 		virtual void UpDate() {};
 		virtual void Draw3D() {};
@@ -161,7 +161,7 @@ namespace ECS
 			//この関数は、渡された引数をT&&型にキャストして返す。（注：Tが左辺値参照の場合にはT&&も左辺値参照になり、それ以外の場合にT&&は右辺値参照になる。）
 			//この関数は、主に転送関数（forwarding function）の実装を単純化する目的で使われる：
 			T* c(new T(std::forward<TArgs>(args)...));
-			c->white = this;
+			c->entity = this;
 			std::unique_ptr<Component> uPtr(c);
 			components.emplace_back(std::move(uPtr));
 

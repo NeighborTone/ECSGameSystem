@@ -1,6 +1,7 @@
 #pragma once
 #include "../GameSrc/System/System.hpp"
 #include "./Test/Game.h"
+#include "../GameSrc/Utility/Utility.hpp"
 class GameMain
 {
 private:
@@ -23,9 +24,13 @@ public:
 	{
 		while (system.IsOk() && !PushEscape())
 		{
-			Update();
-			Draw();
-			DOUT << System::GetFPS().GetFrameRate() << std::endl;
+			{
+				//ˆ—•‰‰×‚ðŒv‘ª‚·‚é
+				ProcessingTime<std::chrono::nanoseconds> time;
+				Update();
+				Draw();
+				//DOUT << System::GetFPS().GetFrameRate() << std::endl;
+			}
 		}
 	}
 };

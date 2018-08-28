@@ -1,6 +1,7 @@
 #pragma once
 #include "../ECS/ECS.hpp"
 #include "../Utility/Vec.hpp"
+#include "../ResourceManager/ResourceManager.hpp"
 #include <DxLib.h>
 namespace ECS
 {
@@ -45,26 +46,26 @@ namespace ECS
 		Transform() :pos(nullptr), rota(nullptr) {}
 		void Initialize() override
 		{
-			if (!white->HasComponent<Position>())
+			if (!entity->HasComponent<Position>())
 			{
-				white->AddComponent<Position>(0.f, 0.f);
+				entity->AddComponent<Position>(0.f, 0.f);
 			}
-			if (!white->HasComponent<Rotation>())
+			if (!entity->HasComponent<Rotation>())
 			{
-				white->AddComponent<Rotation>(0.f);
+				entity->AddComponent<Rotation>(0.f);
 			}
-			if (!white->HasComponent<Scale>())
+			if (!entity->HasComponent<Scale>())
 			{
-				white->AddComponent<Scale>(1.f);
+				entity->AddComponent<Scale>(1.f);
 			}
-			if (!white->HasComponent<Velocity>())
+			if (!entity->HasComponent<Velocity>())
 			{
-				white->AddComponent<Velocity>();
+				entity->AddComponent<Velocity>();
 			}
-			pos = &white->GetComponent<Position>();
-			rota = &white->GetComponent<Rotation>();
-			scale = &white->GetComponent<Scale>();
-			velocity = &white->GetComponent<Velocity>();
+			pos = &entity->GetComponent<Position>();
+			rota = &entity->GetComponent<Rotation>();
+			scale = &entity->GetComponent<Scale>();
+			velocity = &entity->GetComponent<Velocity>();
 		}
 		void SetPosition(const float& x, const float& y)
 		{
@@ -118,7 +119,7 @@ namespace ECS
 		}
 		void Initialize() override
 		{
-			pos = &white->GetComponent<Position>();
+			pos = &entity->GetComponent<Position>();
 		}
 		void SetColor(const int r, const int g, const int b)
 		{
@@ -130,7 +131,7 @@ namespace ECS
 		void DrawDisable() { isDraw = false; }
 		void Draw2D() override
 		{
-			if (!white->IsActive())
+			if (!entity->IsActive())
 			{
 				DrawDisable();
 			}
@@ -163,12 +164,36 @@ namespace ECS
 			--cnt;
 			if (cnt <= 0)
 			{
-				white->Destroy();
+				entity->Destroy();
 			}
 		}
 		void Kill()
 		{
 			cnt = 0;
+		}
+	};
+	//ŠÈˆÕ‰æ‘œ•`‰æ
+	class SimpleDraw : public Component
+	{
+	private:
+		Position* pos = nullptr;
+		std::string name;
+	public:
+		SimpleDraw(const char* name_)
+		{
+			name = name_;
+		}
+		void Initialize() override
+		{
+			pos = &entity->GetComponent<Position>();
+		}
+		void Draw2D() override
+		{
+			if (ResourceManager::GetGraph().IsExistenceHandle(name))
+			{
+				DrawGraphF(pos->val.x, pos->val.y, ResourceManager::GetGraph().GetHandle(name), true);
+			}
+			
 		}
 	};
 }

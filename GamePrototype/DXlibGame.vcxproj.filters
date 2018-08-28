@@ -34,6 +34,9 @@
     <Filter Include="GameSrc\GameController\Test">
       <UniqueIdentifier>{6b899102-7e93-434d-ad70-bbfdb171a51c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameSrc\ResourceManager">
+      <UniqueIdentifier>{e0ff1731-5ad2-47c9-add0-c565ba73c45b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSrc\System\System.hpp">
@@ -83,6 +86,9 @@
     </ClInclude>
     <ClInclude Include="GameSrc\Utility\Counter.hpp">
       <Filter>GameSrc\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\ResourceManager\ResourceManager.hpp">
+      <Filter>GameSrc\ResourceManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -32,6 +32,7 @@
     <ClInclude Include="GameSrc\Events\Observer.hpp" />
     <ClInclude Include="GameSrc\GameController\GameMain.hpp" />
     <ClInclude Include="GameSrc\GameController\Test\Game.h" />
+    <ClInclude Include="GameSrc\ResourceManager\ResourceManager.hpp" />
     <ClInclude Include="GameSrc\System\System.hpp" />
     <ClInclude Include="GameSrc\Utility\Console.hpp" />
     <ClInclude Include="GameSrc\Utility\Counter.hpp" />
