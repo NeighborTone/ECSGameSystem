@@ -1,0 +1,284 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="System" Collapsed="true">
+    <Position X="22" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAEAAAAAoAAAAgAAAABABAAAAAAI=</HashCode>
+      <FileName>GameSrc\System\System.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameMain" Collapsed="true">
+    <Position X="23.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAgCAAAAAAAAAAAAAAAAIAAAAAAAAAAI=</HashCode>
+      <FileName>GameSrc\GameController\GameMain.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Game" Collapsed="true">
+    <Position X="22" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAABAAAAAAAwAAAAIAACAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\GameController\Test\Game.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Random" Collapsed="true">
+    <Position X="20.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAABAAACAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\Utility\Random.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TemplateVec2&lt;T&gt;" Collapsed="true">
+    <Position X="9.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQABAAQAAAAAAEAAAAQBAGQAAAAAACADgAAAAAAA=</HashCode>
+      <FileName>GameSrc\Utility\Vec.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TemplateVec3&lt;T&gt;" Collapsed="true">
+    <Position X="4.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQABAAQAAAAAAEAAAAQBAGQAAAAAABADgAQAAAAA=</HashCode>
+      <FileName>GameSrc\Utility\Vec.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Float4" Collapsed="true">
+    <Position X="20.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAQAAAAAAAAAoAQAhAAAgAAA=</HashCode>
+      <FileName>GameSrc\Utility\Vec.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ECS::Entity" Collapsed="true">
+    <Position X="22" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ECQCACAAAAAIAQAAEACABoAEEEBoAAAAACAAIAAAABg=</HashCode>
+      <FileName>GameSrc\ECS\ECS.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ECS::Component" Collapsed="true">
+    <Position X="9.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIQiABAAAAAAAQAAEAAAAAAEAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>GameSrc\ECS\ECS.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ECS::EntityManager" Collapsed="true">
+    <Position X="23.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABQCAAAAAABAAQAAAAABEAAEAAAAAQAAAKAAAAAAgAA=</HashCode>
+      <FileName>GameSrc\ECS\ECS.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ECS::EcsSystem" Collapsed="true">
+    <Position X="20.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\ECS\ECS.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ECS::Transform" Collapsed="true">
+    <Position X="7" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAQAAAAAAAIQDAAAAAggAAAQAAgAAAAA=</HashCode>
+      <FileName>GameSrc\Components\Transform.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ECS::IBoxColiider" Collapsed="true">
+    <Position X="8.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAhgAAAAAAA=</HashCode>
+      <FileName>GameSrc\Components\Transform.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ECS::HitBase" Collapsed="true">
+    <Position X="8.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACQAAAAAAAAQAAAAAAAIAIABAAEAKAwAhgAEQIBAA=</HashCode>
+      <FileName>GameSrc\Components\Transform.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ECS::KillEntity" Collapsed="true">
+    <Position X="5.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAgAAEAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\Components\Transform.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Event::AddWhiteBox" Collapsed="true">
+    <Position X="5.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAQgAAAAAA=</HashCode>
+      <FileName>GameSrc\Events\Event1.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Event::RedNotify" Collapsed="true">
+    <Position X="9.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAQAAAAAAAAAAAAAAABAAAAA=</HashCode>
+      <FileName>GameSrc\Events\Event2.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Event::AddRedBox" Collapsed="true">
+    <Position X="2.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAIAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>GameSrc\Events\Event2.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Event::ObserverBase&lt;T&gt;" Collapsed="true">
+    <Position X="4" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQBAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\Events\Observer.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Event::Subject&lt;T&gt;" Collapsed="true">
+    <Position X="8.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAQAAAAAhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\Events\Observer.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Event::Observer&lt;T, ...keys&gt;" Collapsed="true">
+    <Position X="4" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAIAABAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\Events\Observer.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Easing" Collapsed="true">
+    <Position X="22" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEIBAQQIEBwmBBIgIRAAACgUCIAQCAAgASAAKCIgEAI=</HashCode>
+      <FileName>GameSrc\Utility\Easing.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FPS" Collapsed="true">
+    <Position X="23.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQYBAAAAABEAAQAAAgkAAAAQAAAAIACAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\Utility\FPS.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WinMessageBox" Collapsed="true">
+    <Position X="20.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>GameSrc\Utility\Utility.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Console" Collapsed="true">
+    <Position X="22" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAIAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\Utility\Console.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="coutDbgString" Collapsed="true">
+    <Position X="23.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAABAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>GameSrc\Utility\Console.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Event::WhiteNotify" Collapsed="true">
+    <Position X="7.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAAQAAAAAAAAAAAAAAABAAAAA=</HashCode>
+      <FileName>GameSrc\Events\Event1.hpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Event::Message" Collapsed="true">
+    <Position X="20.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\Events\EventList.hpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ECS::ComponentData" Collapsed="true">
+    <Position X="12.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\ECS\ECS.hpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ECS::Position" Collapsed="true">
+    <Position X="10.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\Components\Transform.hpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ECS::Rotation" Collapsed="true">
+    <Position X="12.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\Components\Transform.hpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ECS::Scale" Collapsed="true">
+    <Position X="13.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\Components\Transform.hpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ECS::Velocity" Collapsed="true">
+    <Position X="15.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>GameSrc\Components\Transform.hpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Typedef Name="Vec2_i" Collapsed="true">
+    <Position X="10.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\Utility\Vec.hpp</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Vec2" Collapsed="true">
+    <Position X="7.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\Utility\Vec.hpp</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Vec2_d" Collapsed="true">
+    <Position X="9.25" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\Utility\Vec.hpp</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Vec3_i" Collapsed="true">
+    <Position X="3" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\Utility\Vec.hpp</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Vec3" Collapsed="true">
+    <Position X="4.5" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\Utility\Vec.hpp</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Vec3_d" Collapsed="true">
+    <Position X="6" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\Utility\Vec.hpp</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Ease" Collapsed="true">
+    <Position X="23.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GameSrc\Utility\Easing.hpp</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Font Name="Yu Gothic UI" Size="9" />
+</ClassDiagram>

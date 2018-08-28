@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="WinMain.cpp" />
+    <ClCompile Include="GameSrc\ECS\ECS.cpp">
+      <Filter>GameSrc\ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="GameSrc\GameController\Test\Game.cpp">
+      <Filter>GameSrc\GameController\Test</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="GameSrc">
+      <UniqueIdentifier>{e6e0aee8-38b7-47f2-9b67-d38918b8b2f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameSrc\System">
+      <UniqueIdentifier>{5e6ff179-b896-45a0-9cf1-e6c43b35751d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameSrc\GameController">
+      <UniqueIdentifier>{a77f8216-c61d-4875-9692-f1447420a129}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameSrc\ECS">
+      <UniqueIdentifier>{c06b7b89-ec06-40ee-b19d-f71985aeaa01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameSrc\Events">
+      <UniqueIdentifier>{b8d51a9d-f30f-45f4-8afa-48044c33657d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameSrc\Components">
+      <UniqueIdentifier>{48381e19-1504-4fde-bc7b-8136f90ef01b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameSrc\Utility">
+      <UniqueIdentifier>{94cecc3d-8e85-49a6-aed9-73a99f2b424d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameSrc\GameController\Test">
+      <UniqueIdentifier>{6b899102-7e93-434d-ad70-bbfdb171a51c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GameSrc\System\System.hpp">
+      <Filter>GameSrc\System</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\GameController\GameMain.hpp">
+      <Filter>GameSrc\GameController</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\ECS\ECS.hpp">
+      <Filter>GameSrc\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\Events\Observer.hpp">
+      <Filter>GameSrc\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\Components\Transform.hpp">
+      <Filter>GameSrc\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\Utility\Vec.hpp">
+      <Filter>GameSrc\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\Utility\Random.hpp">
+      <Filter>GameSrc\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\Events\EventList.hpp">
+      <Filter>GameSrc\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\Events\Event1.hpp">
+      <Filter>GameSrc\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\Events\Event2.hpp">
+      <Filter>GameSrc\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\GameController\Test\Game.h">
+      <Filter>GameSrc\GameController\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\Utility\Easing.hpp">
+      <Filter>GameSrc\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\Utility\Utility.hpp">
+      <Filter>GameSrc\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\Utility\Console.hpp">
+      <Filter>GameSrc\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\Utility\FPS.hpp">
+      <Filter>GameSrc\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\Utility\Counter.hpp">
+      <Filter>GameSrc\Utility</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+</Project>
