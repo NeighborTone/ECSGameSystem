@@ -26,7 +26,7 @@ public:
 		{
 			{
 				//ˆ—•‰‰×‚ğŒv‘ª‚·‚é
-				ProcessingTime<std::chrono::nanoseconds> time;
+				ProcessingTime<std::chrono::milliseconds> time;
 				Update();
 				Draw();
 				//DOUT << System::GetFPS().GetFrameRate() << std::endl;

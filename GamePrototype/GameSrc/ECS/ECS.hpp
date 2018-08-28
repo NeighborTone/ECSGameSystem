@@ -304,4 +304,12 @@ namespace ECS
 			return *mana;
 		}
 	};
+
+	//Entityの原型を作るためのインターフェース
+	template<typename... Args>
+	class IArcheType
+	{
+	private:
+		virtual ECS::Entity* operator()(Args...) = 0;
+	};
 }
