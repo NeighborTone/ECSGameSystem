@@ -24,14 +24,18 @@
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameSrc\ArcheType\ArcheType.hpp" />
+    <ClInclude Include="GameSrc\Collision\Collision.hpp" />
     <ClInclude Include="GameSrc\Components\Transform.hpp" />
     <ClInclude Include="GameSrc\ECS\ECS.hpp" />
     <ClInclude Include="GameSrc\Events\Event1.hpp" />
     <ClInclude Include="GameSrc\Events\Event2.hpp" />
+    <ClInclude Include="GameSrc\Events\Event3.hpp" />
     <ClInclude Include="GameSrc\Events\EventList.hpp" />
     <ClInclude Include="GameSrc\Events\Observer.hpp" />
     <ClInclude Include="GameSrc\GameController\GameMain.hpp" />
     <ClInclude Include="GameSrc\GameController\Test\Game.h" />
+    <ClInclude Include="GameSrc\Input\Input.hpp" />
     <ClInclude Include="GameSrc\ResourceManager\ResourceManager.hpp" />
     <ClInclude Include="GameSrc\System\System.hpp" />
     <ClInclude Include="GameSrc\Utility\Console.hpp" />

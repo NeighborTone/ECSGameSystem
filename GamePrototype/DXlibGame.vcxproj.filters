@@ -37,6 +37,15 @@
     <Filter Include="GameSrc\ResourceManager">
       <UniqueIdentifier>{e0ff1731-5ad2-47c9-add0-c565ba73c45b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameSrc\ArcheType">
+      <UniqueIdentifier>{fb40f408-12fb-404d-a899-612c6cd17745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameSrc\Input">
+      <UniqueIdentifier>{866c0bcf-82a9-40ef-8b6f-a289701c1def}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameSrc\Collision">
+      <UniqueIdentifier>{0ffad3b7-6236-41f3-be42-dc9720a518ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSrc\System\System.hpp">
@@ -89,6 +98,18 @@
     </ClInclude>
     <ClInclude Include="GameSrc\ResourceManager\ResourceManager.hpp">
       <Filter>GameSrc\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\ArcheType\ArcheType.hpp">
+      <Filter>GameSrc\ArcheType</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\Input\Input.hpp">
+      <Filter>GameSrc\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\Events\Event3.hpp">
+      <Filter>GameSrc\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\Collision\Collision.hpp">
+      <Filter>GameSrc\Collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

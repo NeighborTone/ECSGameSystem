@@ -83,10 +83,10 @@ namespace ECS
 			}),
 				std::end(components));
 		}
+		
 	public:
 
 		Entity(EntityManager& manager) : manager_(manager) {}
-
 		//このEntityについているComponentの初期化処理を行います
 		void Initialize()
 		{
@@ -189,7 +189,6 @@ namespace ECS
 			auto ptr(componentArray[GetComponentTypeID<T>()]);
 			return *static_cast<T*>(ptr);
 		}
-
 	};
 
 	//Entity統括クラス
@@ -220,7 +219,10 @@ namespace ECS
 		}
 		void Draw2D()
 		{
-			for (auto& e : entityes) e->Draw2D();
+			for (auto& e : entityes)
+			{
+				e->Draw2D();
+			}
 		}
 		//アクティブでないものを削除します
 		void Refresh()
@@ -306,7 +308,7 @@ namespace ECS
 	};
 
 	//Entityの原型を作るためのインターフェース
-	template<typename... Args>
+	template<class... Args>
 	class IArcheType
 	{
 	private:

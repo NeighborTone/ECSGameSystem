@@ -24,13 +24,8 @@ public:
 	{
 		while (system.IsOk() && !PushEscape())
 		{
-			{
-				//ˆ—•‰‰×‚ğŒv‘ª‚·‚é
-				ProcessingTime<std::chrono::milliseconds> time;
-				Update();
-				Draw();
-				//DOUT << System::GetFPS().GetFrameRate() << std::endl;
-			}
+			Update();
+			Draw();
 		}
 	}
 };

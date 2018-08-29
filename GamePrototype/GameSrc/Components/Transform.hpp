@@ -2,6 +2,8 @@
 #include "../ECS/ECS.hpp"
 #include "../Utility/Vec.hpp"
 #include "../ResourceManager/ResourceManager.hpp"
+#include "../GameSrc/Utility/Counter.hpp"
+#include "../Input/Input.hpp"
 #include <DxLib.h>
 namespace ECS
 {
@@ -33,6 +35,21 @@ namespace ECS
 		Velocity() = default;
 		Velocity(const Vec2& v) :val(v) {}
 		Velocity(const float& x, const float& y) : val(x,y){}
+	};
+
+
+	class Direction : public ComponentData
+	{
+	public:
+		enum class Dir : short
+		{
+			R,
+			L,
+			U,
+			D
+		};
+		Dir val;
+		Direction() : val(Dir::R) {};
 	};
 
 	class Transform : public Component
@@ -171,6 +188,10 @@ namespace ECS
 		{
 			cnt = 0;
 		}
+		void SetKillLimit(const int limit)
+		{
+			cnt = limit;
+		}
 	};
 	//ŠÈˆÕ‰æ‘œ•`‰æ
 	class SimpleDraw : public Component
@@ -181,6 +202,10 @@ namespace ECS
 	public:
 		SimpleDraw(const char* name_)
 		{
+			if (!ResourceManager::GetGraph().IsExistenceHandle(name_))
+			{
+				assert(false);
+			}
 			name = name_;
 		}
 		void Initialize() override
@@ -194,6 +219,207 @@ namespace ECS
 				DrawGraphF(pos->val.x, pos->val.y, ResourceManager::GetGraph().GetHandle(name), true);
 			}
 			
+		}
+	};
+	//Animation
+	class AnimationDraw : public Component
+	{
+	private:
+		Position* pos = nullptr;
+		Direction* dir = nullptr;
+		std::string name;
+		int index = 0;
+		bool isTurn = false;
+	public:
+		AnimationDraw(const char* name_)
+		{
+			if (!ResourceManager::GetGraph().IsExistenceDivHandle(name_))
+			{
+				assert(false);
+			}
+			name = name_;
+		}
+		void Initialize() override
+		{
+			if (entity->HasComponent<Direction>())
+			{
+				dir = &entity->GetComponent<Direction>();
+			}
+			pos = &entity->GetComponent<Position>();
+		}
+		void UpDate() override
+		{
+			if (dir->val == Direction::Dir::R)
+			{
+				isTurn = false;
+			}
+			if (dir->val == Direction::Dir::L)
+			{
+				isTurn = true;
+			}
+		}
+		void Draw2D() override
+		{
+			if (ResourceManager::GetGraph().IsExistenceDivHandle(name))
+			{
+				if (!isTurn)
+				{
+					DrawGraphF(pos->val.x, pos->val.y, ResourceManager::GetGraph().GetDivHandle(name, index), true);
+				}
+				else
+				{
+					DrawTurnGraphF(pos->val.x, pos->val.y, ResourceManager::GetGraph().GetDivHandle(name, index), true);
+				}
+			}
+		}
+		void SetIndex(const int index_)
+		{
+			index = index_;
+		}
+		
+	};
+
+	class InputMove : public Component
+	{
+	private:
+		Position * pos = nullptr;
+		Direction* pDir = nullptr;
+		Velocity* vel = nullptr;
+		Position pre;
+		bool isMove = false;
+		bool isStop = false;
+	public:
+		InputMove() = default;
+		void Initialize() override
+		{
+			pos = &entity->GetComponent<Position>();
+			pDir = &entity->GetComponent<Direction>();
+			vel = &entity->GetComponent<Velocity>();
+		}
+		void UpDate() override
+		{
+			pre.val.x = pos->val.x;
+			pre.val.y = pos->val.y;
+			isMove = false;
+			if (!isStop)
+			{
+				if (Input::GetKey(KEY_INPUT_RIGHT) >= 1)
+				{
+					pos->val.x += vel->val.x;
+					pDir->val = Direction::Dir::R;
+					isMove = true;
+				}
+				if (Input::GetKey(KEY_INPUT_LEFT) >= 1)
+				{
+					pos->val.x -= vel->val.x;
+					pDir->val = Direction::Dir::L;
+					isMove = true;
+				}
+				/*if (Input::GetKey(KEY_INPUT_UP) >= 1)
+				{
+					pos->val.y -= vel->val.y;
+					pDir->val = Direction::Dir::U;
+					isMove = true;
+				}
+				if (Input::GetKey(KEY_INPUT_DOWN) >= 1)
+				{
+					pos->val.y += vel->val.y;
+					pDir->val = Direction::Dir::D;
+					isMove = true;
+				}*/
+			}
+		}
+		//ˆÚ“®‘O‚ÌÀ•WŽæ“¾
+		const Position& GetPrePos() const
+		{
+			return pre;
+		}
+		const bool IsMove() const
+		{
+			return isMove;
+		}
+		void Stop()
+		{
+			isStop = true;
+		}
+		void GoMove()
+		{
+			isStop = false;
+		}
+	};
+
+	class InputAttack : public Component
+	{
+	private:
+		bool isAttack = false;
+	public:
+		void UpDate() override 
+		{
+			if (Input::GetKey(KEY_INPUT_Z) == 1)
+			{
+
+				isAttack = true;
+			}
+			
+		}
+		void ResetAttack()
+		{
+			isAttack = false;
+		}
+
+		//UŒ‚ƒ‚[ƒVƒ‡ƒ“’†
+		const bool IsAttacking() const
+		{
+			return isAttack;
+		}
+		//UŒ‚‚µ‚½uŠÔ‚¾‚¯true
+		const bool IsAttacked() const
+		{
+			return Input::GetKey(KEY_INPUT_Z) == 1 && !isAttack;
+		}
+	};
+
+	class PlayerAnimation : public Component
+	{
+	private:
+		InputAttack* attack;
+		InputMove* input;
+		AnimationDraw* anim;
+		Counter_f idol;
+		Counter_f running;
+		Counter_f attacking;
+	public:
+		void Initialize() override
+		{
+			input = &entity->GetComponent<InputMove>();
+			anim = &entity->GetComponent<AnimationDraw>();
+			attack = &entity->GetComponent<InputAttack>();
+			idol.SetCounter(1.f, 0.15f, 1.f, 5.f);
+			running.SetCounter(6.f, 0.15f, 6.f, 11.f);
+			attacking.SetCounter(24.f,0.2f,24.f,29.f);
+		}
+		void UpDate() override
+		{
+			if (attack->IsAttacking())
+			{
+				input->Stop();
+				anim->SetIndex(static_cast<int>(++attacking));
+				if (attacking.IsMax())
+				{
+					attacking.Reset();
+					attacking.SetCounter(24.f,0.2f,24.f,29.f);
+					attack->ResetAttack();
+					input->GoMove();
+				}
+			}
+			else if (input->IsMove())
+			{
+				anim->SetIndex(static_cast<int>(++running));
+			}
+			else
+			{
+				anim->SetIndex(static_cast<int>(++idol));
+			}
 		}
 	};
 }

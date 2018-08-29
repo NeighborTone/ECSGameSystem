@@ -117,11 +117,11 @@ public:
 		now -= add;
 	}
 	//!経過時間を0にし、フラグを再セットします
-	void Reset()
+	void Reset(T now_ = static_cast<T>(0))
 	{
 		isMax = false;
 		isMin = false;
-		now = 0;
+		now = now_;
 	}
 
 	//!現在のカウンターの値をミリ秒で返します
