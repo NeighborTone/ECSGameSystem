@@ -17,9 +17,12 @@ namespace ECS
 			entity.AddComponent<ECS::InputMove>();
 			entity.AddComponent<ECS::InputJump>(-10.f, -3.f);
 			entity.AddComponent<ECS::InputAttack>();
-			entity.AddComponent<ECS::HitBase>(64.f, 64.f).SetColor(255, 255, 0);
-			entity.AddComponent<ECS::FootBase>(64.f, 1.f).SetColor(255, 0, 255);
-			entity.GetComponent<ECS::FootBase>().SetOffset(0.f,64.f);
+			entity.AddComponent<ECS::HitBase>(52.f, 54.f).SetColor(255, 255, 0);
+			entity.GetComponent<ECS::HitBase>().SetOffset(7.f, 8.f);
+			//entity.GetComponent<ECS::HitBase>().DrawDisable();
+			entity.AddComponent<ECS::FootBase>(32.f, 1.f).SetColor(255, 0, 255);
+			entity.GetComponent<ECS::FootBase>().SetOffset(18.f, 64.f);
+			//entity.GetComponent<ECS::FootBase>().DrawDisable();
 			entity.AddComponent<ECS::AnimationDraw>(name);
 			entity.AddComponent<ECS::PlayerAnimation>();
 			entity.AddGroup(ENTITY_GROUP::Player);
@@ -28,14 +31,14 @@ namespace ECS
 	};
 	//$Test$
 	//óŒêFÇÃî†ÇÃå¥å^(ArcheType)ÇçÏÇÈ
-	class GreenBoxArcheType : public ECS::IArcheType<float,float>
+	class GreenBoxArcheType : public ECS::IArcheType<float, float, float, float>
 	{
 	public:
-		ECS::Entity* operator()(const float x, const float y) override
+		ECS::Entity* operator()(const float x, const float y, const float w, const float h) override
 		{
 			auto& entity(ECS::EcsSystem::GetManager().AddEntity());
 			entity.AddComponent<ECS::Transform>().SetPosition(x, y);
-			entity.AddComponent<ECS::HitBase>(1280.f, 100.f).SetColor(0, 255, 0);
+			entity.AddComponent<ECS::HitBase>(w, h).SetColor(0, 255, 0);
 			entity.AddGroup(ENTITY_GROUP::Map);
 			return &entity;
 		}

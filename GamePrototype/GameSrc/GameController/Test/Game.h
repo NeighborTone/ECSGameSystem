@@ -19,7 +19,7 @@ private:
 	ECS::EntityManager* pManager;
 	ECS::Entity* player;
 	ECS::Entity* hitBox[5];
-	ECS::Entity* ground;
+	ECS::Entity* ground[5];
 	bool isReset = true;
 	void EventUpDate(); 
 

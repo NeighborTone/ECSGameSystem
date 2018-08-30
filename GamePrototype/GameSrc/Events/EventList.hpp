@@ -5,13 +5,9 @@ namespace Event
 {
 	struct Message
 	{
-		static const std::string Hit;
-		static const std::string SceneChange;
-		static const std::string PlayerAttack;
-		static const std::string Landing;
+		inline static const std::string Hit = "hit!!";
+		inline static const std::string SceneChange = "changeScene";
+		inline static const std::string PlayerAttack = "attack!";
+		inline static const std::string Landing = "landing!";
 	};
-	const std::string Message::Hit = "hit!!";
-	const std::string Message::SceneChange = "changeScene";
-	const std::string Message::PlayerAttack = "attack!";
-	const std::string Message::Landing = "landing!";
 }

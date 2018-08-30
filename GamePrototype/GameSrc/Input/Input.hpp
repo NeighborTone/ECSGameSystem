@@ -1,8 +1,9 @@
 #pragma once
 #include <DxLib.h>
-namespace Input
+class Input
 {
-	static int key[256];	//キーの入力状態を格納する
+public:
+	inline static int key[256];	//キーの入力状態を格納する
 	//キーの入力状態の更新
 	static void Update_Key()
 	{

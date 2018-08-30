@@ -20,9 +20,13 @@ namespace Event
 			{
 				for (const auto& map : m)
 				{
-					if (Collision::BoxAndBox<ECS::FootBase,ECS::HitBase>(*player, *map))
+					if (Collision::BoxAndBox<ECS::FootBase, ECS::HitBase>(*player, *map))
 					{
 						Call(Message::Landing);
+						//‚¢‚¢Š´‚¶‚É‚ß‚èž‚Ü‚È‚¢‚æ‚¤‹­ˆø‚É’²®(-5‚Í“K“–...)
+						player->GetComponent<ECS::Position>().val.y =
+							map->GetComponent<ECS::Position>().val.y - player->GetComponent<ECS::HitBase>().h() - 5;
+						break;
 					}
 					else
 					{
@@ -56,7 +60,7 @@ namespace Event
 			const auto& p = ECS::EcsSystem::GetManager().GetEntitiesByGroup(ENTITY_GROUP::Player);
 			for (const auto& player : p)
 			{
-				//player->GetComponent<ECS::Position>().val = player->GetComponent<ECS::InputJump>().GetPrePos();
+				//DOUT << Message::Landing << std::endl;
 				player->GetComponent<ECS::InputJump>().Landing(true);
 			}
 		}

@@ -11,8 +11,8 @@ namespace ECS
 	{
 		Vec2 val;
 		Position() = default;
-		Position(const Vec2& v) :val(v){}
-		Position(const float& x, const float& y) :val(x,y) {}
+		Position(const Vec2& v) :val(v) {}
+		Position(const float& x, const float& y) :val(x, y) {}
 	};
 
 	struct Rotation : public ComponentData
@@ -34,7 +34,7 @@ namespace ECS
 		Vec2 val;
 		Velocity() = default;
 		Velocity(const Vec2& v) :val(v) {}
-		Velocity(const float& x, const float& y) : val(x,y){}
+		Velocity(const float& x, const float& y) : val(x, y) {}
 	};
 
 	struct Direction : public ComponentData
@@ -60,7 +60,7 @@ namespace ECS
 	class Physics : public Component
 	{
 	private:
-		Gravity* gravity;
+		Gravity * gravity;
 		Velocity* velocity;
 	public:
 		void Initialize() override
@@ -94,7 +94,7 @@ namespace ECS
 		Position * pos;
 		Rotation* rota;
 		Scale* scale;
-	
+
 	public:
 		Transform() :pos(nullptr), rota(nullptr) {}
 		void Initialize() override
@@ -134,17 +134,27 @@ namespace ECS
 	class IBoxColiider
 	{
 	public:
+		IBoxColiider() = default;
+		virtual ~IBoxColiider() = default;
+		virtual void SetColor(const int r, const int g, const int b) = 0;
+		virtual void SetOffset(const float x, const float y) = 0;
+		virtual void FillEnable() = 0;
+		virtual void FillDisable() = 0;
+		virtual void DrawEnable() = 0;
+		virtual void DrawDisable() = 0;
 		virtual float w() const = 0;
 		virtual float h() const = 0;
 		virtual float x() const = 0;
 		virtual float y() const = 0;
 	};
 
+	//コリジョンの重複を何とか許可したい
 	//矩形の定義
 	class HitBase : public Component, public IBoxColiider
 	{
 	private:
-		Position* pos = nullptr;
+		Position * pos = nullptr;
+		Vec2 offSetPos;
 		float W, H;
 		unsigned int color = 4294967295;
 		bool isFill = false;
@@ -155,7 +165,6 @@ namespace ECS
 			W = ww;
 			H = hh;
 		}
-
 		~HitBase()
 		{
 			pos = nullptr;
@@ -164,14 +173,6 @@ namespace ECS
 		{
 			pos = &entity->GetComponent<Position>();
 		}
-		void SetColor(const int r, const int g, const int b)
-		{
-			color = GetColor(r, g, b);
-		}
-		void FillEnable() { isFill = true; }
-		void FillDisable() { isFill = false; }
-		void DrawEnable() { isDraw = true; }
-		void DrawDisable() { isDraw = false; }
 		void Draw2D() override
 		{
 			if (!entity->IsActive())
@@ -181,24 +182,36 @@ namespace ECS
 			if (isDraw)
 			{
 				DrawBoxAA(
-					pos->val.x,
-					pos->val.y,
-					pos->val.x + w(),
-					pos->val.y + h(),
+					pos->val.x + offSetPos.x,
+					pos->val.y + offSetPos.y,
+					pos->val.x + offSetPos.x + w(),
+					pos->val.y + offSetPos.y + h(),
 					color, isFill, 2);
 			}
-
 		}
-		float w() const { return W; }
-		float h() const { return H; }
-		float x() const { return pos->val.x; }
-		float y() const { return pos->val.y; }
+		void SetColor(const int r, const int g, const int b) override
+		{
+			color = GetColor(r, g, b);
+		}
+		void SetOffset(const float x, const float y) override
+		{
+			offSetPos.x = x;
+			offSetPos.y = y;
+		}
+		void FillEnable() override { isFill = true; }
+		void FillDisable() override { isFill = false; }
+		void DrawEnable() override { isDraw = true; }
+		void DrawDisable() override { isDraw = false; }
+		float w() const override { return W; }
+		float h() const override { return H; }
+		float x() const override { return pos->val.x + offSetPos.x; }
+		float y() const override { return pos->val.y + offSetPos.y; }
 	};
-	//矩形の定義
+	//足用矩形の定義
 	class FootBase : public Component, public IBoxColiider
 	{
 	private:
-		Position* pos = nullptr;
+		Position * pos = nullptr;
 		Vec2 offSetPos;
 		float W, H;
 		unsigned int color = 4294967295;
@@ -218,19 +231,6 @@ namespace ECS
 		{
 			pos = &entity->GetComponent<Position>();
 		}
-		void SetColor(const int r, const int g, const int b)
-		{
-			color = GetColor(r, g, b);
-		}
-		void SetOffset(const float x, const float y)
-		{
-			offSetPos.x = x;
-			offSetPos.y = y;
-		}
-		void FillEnable() { isFill = true; }
-		void FillDisable() { isFill = false; }
-		void DrawEnable() { isDraw = true; }
-		void DrawDisable() { isDraw = false; }
 		void Draw2D() override
 		{
 			if (!entity->IsActive())
@@ -246,12 +246,24 @@ namespace ECS
 					pos->val.y + offSetPos.y + h(),
 					color, isFill, 2);
 			}
-
 		}
-		float w() const { return W; }
-		float h() const { return H; }
-		float x() const { return pos->val.x + offSetPos.x; }
-		float y() const { return pos->val.y + offSetPos.y; }
+		void SetColor(const int r, const int g, const int b) override
+		{
+			color = GetColor(r, g, b);
+		}
+		void SetOffset(const float x, const float y) override
+		{
+			offSetPos.x = x;
+			offSetPos.y = y;
+		}
+		void FillEnable() override { isFill = true; }
+		void FillDisable() override { isFill = false; }
+		void DrawEnable() override { isDraw = true; }
+		void DrawDisable() override { isDraw = false; }
+		float w() const override { return W; }
+		float h() const override { return H; }
+		float x() const override { return pos->val.x + offSetPos.x; }
+		float y() const override { return pos->val.y + offSetPos.y; }
 	};
 
 	//指定したフレーム後にEntityを殺す
@@ -284,7 +296,7 @@ namespace ECS
 	class SimpleDraw : public Component
 	{
 	private:
-		Position* pos = nullptr;
+		Position * pos = nullptr;
 		std::string name;
 	public:
 		SimpleDraw(const char* name_)
@@ -305,7 +317,7 @@ namespace ECS
 			{
 				DrawGraphF(pos->val.x, pos->val.y, ResourceManager::GetGraph().GetHandle(name), true);
 			}
-			
+
 		}
 	};
 
@@ -313,7 +325,7 @@ namespace ECS
 	class AnimationDraw : public Component
 	{
 	private:
-		Position* pos = nullptr;
+		Position * pos = nullptr;
 		Direction* dir = nullptr;
 		std::string name;
 		int index = 0;
@@ -365,13 +377,13 @@ namespace ECS
 		{
 			index = index_;
 		}
-		
+
 	};
 
 	class InputJump : public Component
 	{
 	private:
-		Position* pos = nullptr;
+		Position * pos = nullptr;
 		Gravity* gravity;
 		Vec2 pre;
 		bool isStop = false;
@@ -465,7 +477,7 @@ namespace ECS
 		Position * pos = nullptr;
 		Direction* pDir = nullptr;
 		Velocity* vel = nullptr;
-		Position pre;
+		Vec2 pre;
 		bool isMove = false;
 		bool isStop = false;
 	public:
@@ -478,8 +490,7 @@ namespace ECS
 		}
 		void UpDate() override
 		{
-			pre.val.x = pos->val.x;
-			pre.val.y = pos->val.y;
+			pre = pos->val;
 			isMove = false;
 			if (!isStop)
 			{
@@ -498,7 +509,7 @@ namespace ECS
 			}
 		}
 		//移動前の座標取得
-		const Position& GetPrePos() const
+		const Vec2& GetPrePos() const
 		{
 			return pre;
 		}
@@ -525,20 +536,19 @@ namespace ECS
 		bool isAttack = false;
 		bool isStop = false;
 	public:
-		void UpDate() override 
+		void UpDate() override
 		{
 			if (!isStop && Input::GetKey(KEY_INPUT_Z) == 1)
 			{
 
 				isAttack = true;
 			}
-			
+
 		}
 		void EndAttack()
 		{
 			isAttack = false;
 		}
-
 		//攻撃モーション中
 		const bool IsAttacking() const
 		{
@@ -592,13 +602,15 @@ namespace ECS
 		Counter_f jumpAttackingCnt;
 		void AnimSelect()
 		{
-			
+
 			if (inputJump->IsLanding() && inputMove->IsMoved())
 			{
 				state = Run;
 				DrawFormatString(300, 40, 0xffffffffu, "Run");
 			}
-			else if(!inputJump->IsLanding() && inputJump->IsJumping())
+			else if (!inputJump->IsLanding() &&
+				inputJump->IsJumping() &&
+				!inputAttack->IsAttacking())
 			{
 				state = Jump;
 				DrawFormatString(300, 60, 0xffffffffu, "Jump");
@@ -616,7 +628,7 @@ namespace ECS
 					DrawFormatString(300, 80, 0xffffffffu, "Idol");
 				}
 			}
-			if (state != Jump && state != Fall && 
+			if (state != Jump && state != Fall &&
 				inputAttack->IsAttacking())
 			{
 				state = Attack;
@@ -632,7 +644,7 @@ namespace ECS
 			inputAttack = &entity->GetComponent<InputAttack>();
 			idolCnt.SetCounter(1.f, 0.15f, 1.f, 5.f);
 			runningCnt.SetCounter(6.f, 0.15f, 6.f, 11.f);
-			attackingCnt.SetCounter(24.f,0.2f,24.f,29.f);
+			attackingCnt.SetCounter(24.f, 0.2f, 24.f, 29.f);
 			jumpCnt.SetCounter(19.f, 0.f, 19.f, 19.f);
 			fallCnt.SetCounter(21.f, 0.f, 21.f, 21.f);
 			jumpAttackingCnt.SetCounter(36.f, 0.2f, 36.f, 41.f);

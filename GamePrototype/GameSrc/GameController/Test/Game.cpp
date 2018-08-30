@@ -17,13 +17,17 @@ Game::Game()
 		ProcessingTime<std::chrono::milliseconds> time;
 		pManager = &ECS::EcsSystem::GetManager();
 		//リソースクラスのテスト
-		ResourceManager::GetGraph().LoadDiv("Resource/Act_Chara2.png", "PlayerGraphic",48,6,8,64,64);
-		ResourceManager::GetSound().Load("Resource/Grass.wav","bgm");
+		ResourceManager::GetGraph().LoadDiv("Resource/Act_Chara2.png", "PlayerGraphic", 48, 6, 8, 64, 64);
+		ResourceManager::GetSound().Load("Resource/Grass.wav", "bgm");
 		ResourceManager::GetSound().Load("Resource/タマネギ.ogg", "hitSE");
 		PlaySoundMem(ResourceManager::GetSound().GetHandle("bgm"), DX_PLAYTYPE_LOOP);
 		//ArcheType(原型)から作る
 		player = ECS::PlayerArcheType()(100.f, 500.f, "PlayerGraphic");
-		ground = ECS::GreenBoxArcheType()(0.f, 600.f);
+		ground[0] = ECS::GreenBoxArcheType()(0.f, 600.f, 1280.f, 100.f);
+		ground[1] = ECS::GreenBoxArcheType()(300.f, 480.f, 80.f, 64.f);
+		ground[2] = ECS::GreenBoxArcheType()(400.f, 380.f, 80.f, 10.f);
+		ground[3] = ECS::GreenBoxArcheType()(500.f, 280.f, 80.f, 10.f);
+		ground[4] = ECS::GreenBoxArcheType()(600.f, 180.f, 80.f, 10.f);
 		for (auto i(0u); i < std::size(hitBox); ++i)
 		{
 			hitBox[i] = ECS::BlueBoxArcheType()((float)i * 100.f + 200.f, 500.f);
@@ -46,7 +50,7 @@ void Game::ResetGame()
 	{
 		hitBox[i] = ECS::BlueBoxArcheType()((float)i * 100.f + 200.f, 500.f);
 	}
-	
+
 	isReset = true;
 }
 
@@ -102,7 +106,6 @@ void Game::Draw()
 	const auto& p = pManager->GetEntitiesByGroup(ENTITY_GROUP::Player);
 	const auto& c = pManager->GetEntitiesByGroup(ENTITY_GROUP::PlayerAttackCollision);
 
-	
 	switch (Game::GetScene().Current())
 	{
 	case Scene::Title:
@@ -122,8 +125,8 @@ void Game::Draw()
 		DrawFormatString(0, 0, 0xffffffffu, "End");
 		break;
 	}
-	DrawFormatString(0, 400, 0xffffffffu, 
-R"(Xキーで次のシーン
+	DrawFormatString(0, 400, 0xffffffffu,
+		R"(Xキーで次のシーン
 Rキーでリセット
 ポーズ中にZキーでエンドシーン)");
 }
