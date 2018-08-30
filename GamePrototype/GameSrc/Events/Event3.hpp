@@ -2,9 +2,10 @@
 #include "Observer.hpp"
 #include "../ECS/ECS.hpp"
 #include "EventList.hpp"
-#include "../Components/Transform.hpp"
+#include "../Components/Components.hpp"
 #include "../GameController/Test/Game.h"
 #include "../ArcheType/ArcheType.hpp"
+#include "../GameController/Test/Game.h"
 namespace Event
 {
 	class AttackNotify : public Subject<AttackNotify>
@@ -12,16 +13,18 @@ namespace Event
 	public:
 		//doSomething()‚Å’Ê’m
 		void doSomething() {
-			//ŽÀÛ‚É‚µ‚Ä‚Ù‚µ‚¢ˆ—(Observer)‚É’Ê’m‚ð‘—‚é
-			const auto& player = ECS::EcsSystem::GetManager().GetEntitiesByGroup(Game::GameGroup::Player);
-			for (const auto& it : player)
+			if (Game::GetScene().Current() == Game::Scene::Play)
 			{
-				if (it->HasComponent<ECS::InputAttack>())
+				const auto& player = ECS::EcsSystem::GetManager().GetEntitiesByGroup(ENTITY_GROUP::Player);
+				for (const auto& it : player)
 				{
-					if (it->GetComponent<ECS::InputAttack>().IsAttacked())
+					if (it->HasComponent<ECS::InputAttack>())
 					{
-						
-						Call(Message::PlayerAttack);
+						if (it->GetComponent<ECS::InputAttack>().IsAttacked() && !it->GetComponent<ECS::InputAttack>().IsStop())
+						{
+							//ŽÀÛ‚É‚µ‚Ä‚Ù‚µ‚¢ˆ—(Observer)‚É’Ê’m‚ð‘—‚é
+							Call(Message::PlayerAttack);
+						}
 					}
 				}
 			}
@@ -48,7 +51,7 @@ namespace Event
 		void UpDate([[maybe_unused]]AttackNotify* sender,
 			[[maybe_unused]]const std::string& key_) override
 		{
-			const auto& player = ECS::EcsSystem::GetManager().GetEntitiesByGroup(Game::GameGroup::Player);
+			const auto& player = ECS::EcsSystem::GetManager().GetEntitiesByGroup(ENTITY_GROUP::Player);
 			for (const auto& it : player)
 			{
 				if (it->GetComponent<ECS::Direction>().val == ECS::Direction::Dir::R)
@@ -62,7 +65,6 @@ namespace Event
 					ECS::AttackCollisionBoxArcheType()(it->GetComponent<ECS::Position>().val.OffSetCopy(-20.f, 0));
 				}
 			}
-			
 		}
 	};
 

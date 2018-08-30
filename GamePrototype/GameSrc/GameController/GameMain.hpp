@@ -5,24 +5,30 @@
 class GameMain
 {
 private:
-	System system;
-	Game game;
+	std::unique_ptr<System> system;
+	std::unique_ptr<Game> game;
+
 	void Update()
 	{
-		game.Update();
+		game->Update();
 	}
 	void Draw()
 	{
-		game.Draw();
+		game->Draw();
 	}
 	const bool PushEscape() const
 	{
 		return GetAsyncKeyState(VK_ESCAPE) & 0x8001;
 	}
 public:
+	GameMain()
+	{
+		system = std::make_unique<System>();
+		game = std::make_unique<Game>();
+	}
 	void Run()
 	{
-		while (system.IsOk() && !PushEscape())
+		while (system->IsOk() && !PushEscape())
 		{
 			Update();
 			Draw();

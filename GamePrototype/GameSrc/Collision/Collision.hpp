@@ -1,6 +1,6 @@
 #pragma once
 #include "../ECS/ECS.hpp"
-#include "../Components/Transform.hpp"
+#include "../Components/Components.hpp"
 struct Collision
 {
 	template<class T = ECS::HitBase, class T2 = ECS::HitBase>

@@ -1,10 +1,11 @@
 #include "Game.h"
 #include "../GameSrc/ArcheType/ArcheType.hpp"
 #include "../GameSrc/Utility/Utility.hpp"
-#include "../GameSrc/Components/Transform.hpp"
+#include "../GameSrc/Components/Components.hpp"
 #include "../GameSrc/Events/Event1.hpp"
 #include "../GameSrc/Events/Event2.hpp"
 #include "../GameSrc/Events/Event3.hpp"
+#include "../GameSrc/Events/Event4.hpp"
 #include "../GameSrc/ResourceManager/ResourceManager.hpp"
 #include "../../Collision/Collision.hpp"
 #include <atltime.h>
@@ -18,56 +19,111 @@ Game::Game()
 		//リソースクラスのテスト
 		ResourceManager::GetGraph().LoadDiv("Resource/Act_Chara2.png", "PlayerGraphic",48,6,8,64,64);
 		ResourceManager::GetSound().Load("Resource/Grass.wav","bgm");
+		ResourceManager::GetSound().Load("Resource/タマネギ.ogg", "hitSE");
 		PlaySoundMem(ResourceManager::GetSound().GetHandle("bgm"), DX_PLAYTYPE_LOOP);
-		//ArcheType(原型)から作る↓
-		player = ECS::PlayerArcheType()(100.f, 100.f, "PlayerGraphic");
-		hitBox = ECS::BlueBoxArcheType()(200.f,100.f);
-	}
-}
-
-//まだ呼んでない
-void Game::Initialize()
-{
-	pManager->Initialize();
-}
-
-void Game::EventUpDate()
-{
-	const auto& b = pManager->GetEntitiesByGroup(GameGroup::Box);
-	const auto& c = pManager->GetEntitiesByGroup(GameGroup::PlayerAttackCollision);
-	Event::CreateAttackCollision()();
-	for (const auto& col : c)
-	{
-		for (const auto& box : b)
+		//ArcheType(原型)から作る
+		player = ECS::PlayerArcheType()(100.f, 500.f, "PlayerGraphic");
+		ground = ECS::GreenBoxArcheType()(0.f, 600.f);
+		for (auto i(0u); i < std::size(hitBox); ++i)
 		{
-			if (Collision::BoxAndBox(*col, *box))
-			{
-				//まずコリジョンを消す
-				col->DeleteComponent<ECS::HitBase>();
-				box->DeleteComponent<ECS::HitBase>();
-				//何らかの死亡演出がある場合こんな感じにする
-				box->AddComponent<ECS::KillEntity>(10);  //10フレーム後に死ぬ
-				DOUT << "hit!!" << std::endl;
-			}
+			hitBox[i] = ECS::BlueBoxArcheType()((float)i * 100.f + 200.f, 500.f);
 		}
 	}
 }
 
+void Game::ResetGame()
+{
+	//pManager->Initialize();
+	const auto& b = pManager->GetEntitiesByGroup(ENTITY_GROUP::Enemy);
+	const auto& p = pManager->GetEntitiesByGroup(ENTITY_GROUP::Player);
+	const auto& c = pManager->GetEntitiesByGroup(ENTITY_GROUP::PlayerAttackCollision);
+	for (auto& it : p) { it->Destroy(); }
+	for (auto& it : b) { it->Destroy(); }
+	for (auto& it : c) { it->Destroy(); }
+
+	player = ECS::PlayerArcheType()(100.f, 500.f, "PlayerGraphic");
+	for (auto i(0u); i < std::size(hitBox); ++i)
+	{
+		hitBox[i] = ECS::BlueBoxArcheType()((float)i * 100.f + 200.f, 500.f);
+	}
+	
+	isReset = true;
+}
+
+void Game::EventUpDate()
+{
+	Event::CreateAttackCollision()();
+	Event::SceneChange()();
+	Event::HitEvent()();
+	Event::PlayerLanding()();
+}
+
 void Game::Update()
 {
+	const auto& b = pManager->GetEntitiesByGroup(ENTITY_GROUP::Enemy);
+	const auto& p = pManager->GetEntitiesByGroup(ENTITY_GROUP::Player);
+	const auto& m = pManager->GetEntitiesByGroup(ENTITY_GROUP::Map);
+	const auto& c = pManager->GetEntitiesByGroup(ENTITY_GROUP::PlayerAttackCollision);
 	Input::Update_Key();
 	pManager->Refresh();
 	EventUpDate();
-	pManager->UpDate();
+	switch (Game::GetScene().Current())
+	{
+	case Scene::Reset:
+		ResetGame();
+		Game::GetScene().Change(Game::Scene::Title);
+		break;
+	case Scene::Title:
+		if (!isReset)
+		{
+			ResetGame();
+			isReset = true;
+		}
+		break;
+	case Scene::Play:
+		for (const auto& it : m) { it->UpDate(); }
+		for (const auto& it : p) { it->UpDate(); }
+		for (const auto& it : c) { it->UpDate(); }
+		for (const auto& it : b) { it->UpDate(); }
+		isReset = false;
+		break;
+	case Scene::Pause:
+		break;
+	case Scene::End:
+		break;
+	}
 }
 
 void Game::Draw()
 {
 	//pManager->Draw2D();
-	const auto& b = pManager->GetEntitiesByGroup(GameGroup::Box);
-	const auto& p = pManager->GetEntitiesByGroup(GameGroup::Player);
-	const auto& c = pManager->GetEntitiesByGroup(GameGroup::PlayerAttackCollision);
-	for (const auto& it : b) { it->Draw2D(); }
-	for (const auto& it : p) { it->Draw2D(); }
-	for (const auto& it : c) { it->Draw2D(); }
+	const auto& m = pManager->GetEntitiesByGroup(ENTITY_GROUP::Map);
+	const auto& b = pManager->GetEntitiesByGroup(ENTITY_GROUP::Enemy);
+	const auto& p = pManager->GetEntitiesByGroup(ENTITY_GROUP::Player);
+	const auto& c = pManager->GetEntitiesByGroup(ENTITY_GROUP::PlayerAttackCollision);
+
+	
+	switch (Game::GetScene().Current())
+	{
+	case Scene::Title:
+		DrawFormatString(0, 0, 0xffffffffu, "Title");
+		break;
+	case Scene::Pause:
+		DrawFormatString(50, 0, 0xffffffffu, "Puase");
+	case Scene::Play:
+		DrawFormatString(0, 0, 0xffffffffu, "Play");
+		DrawFormatString(200, 630, 0xffffffffu, "左右キーで移動\nZキーで攻撃\nスペースでジャンプ");
+		for (const auto& it : m) { it->Draw2D(); }
+		for (const auto& it : b) { it->Draw2D(); }
+		for (const auto& it : c) { it->Draw2D(); }
+		for (const auto& it : p) { it->Draw2D(); }
+		break;
+	case Scene::End:
+		DrawFormatString(0, 0, 0xffffffffu, "End");
+		break;
+	}
+	DrawFormatString(0, 400, 0xffffffffu, 
+R"(Xキーで次のシーン
+Rキーでリセット
+ポーズ中にZキーでエンドシーン)");
 }

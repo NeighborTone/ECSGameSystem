@@ -26,11 +26,12 @@
   <ItemGroup>
     <ClInclude Include="GameSrc\ArcheType\ArcheType.hpp" />
     <ClInclude Include="GameSrc\Collision\Collision.hpp" />
-    <ClInclude Include="GameSrc\Components\Transform.hpp" />
+    <ClInclude Include="GameSrc\Components\Components.hpp" />
     <ClInclude Include="GameSrc\ECS\ECS.hpp" />
     <ClInclude Include="GameSrc\Events\Event1.hpp" />
     <ClInclude Include="GameSrc\Events\Event2.hpp" />
     <ClInclude Include="GameSrc\Events\Event3.hpp" />
+    <ClInclude Include="GameSrc\Events\Event4.hpp" />
     <ClInclude Include="GameSrc\Events\EventList.hpp" />
     <ClInclude Include="GameSrc\Events\Observer.hpp" />
     <ClInclude Include="GameSrc\GameController\GameMain.hpp" />

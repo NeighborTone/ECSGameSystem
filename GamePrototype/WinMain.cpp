@@ -1,8 +1,10 @@
-#include <memory>
-#include <new>
 #include <DxLib.h>
 #include "GameSrc/GameController/GameMain.hpp"
 #include "GameSrc/Utility/Console.hpp"
+//メモリリーク検知用
+#include <memory>
+#include <new>
+#include <crtdbg.h>
 #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)

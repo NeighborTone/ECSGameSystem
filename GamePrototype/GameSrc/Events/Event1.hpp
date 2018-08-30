@@ -2,58 +2,63 @@
 #include "Observer.hpp"
 #include "../ECS/ECS.hpp"
 #include "EventList.hpp"
-#include "../Components/Transform.hpp"
+#include "../Components/Components.hpp"
 #include "../Utility/Utility.hpp"
+#include "../GameController/Test/Game.h"
+#include "../Collision/Collision.hpp"
 #include <Windows.h>
 namespace Event
 {
-	class WhiteNotify : public Subject<WhiteNotify>
+	class HitNotify : public Subject<HitNotify>
 	{
 	public:
-		ECS::Entity* me;
-		explicit WhiteNotify(ECS::Entity& e)
-		{
-			me = &e;
-		}
+		ECS::Entity* atkCollision;
+		ECS::Entity* defenceCollision;
 		//doSomething()で通知
 		void doSomething() {
 			//実際にしてほしい処理(Observer)に通知を送る
-			if (GetAsyncKeyState(VK_SPACE) & 0x8001)
+			const auto& b = ECS::EcsSystem().GetManager().GetEntitiesByGroup(ENTITY_GROUP::Enemy);
+			const auto& c = ECS::EcsSystem().GetManager().GetEntitiesByGroup(ENTITY_GROUP::PlayerAttackCollision);
+			for (const auto& col : c)
 			{
-				Call(Message::WhiteBox);
+				for (const auto& box : b)
+				{
+					if (Collision::BoxAndBox(*col, *box))
+					{
+						atkCollision = col;
+						defenceCollision = box;
+						Call(Message::Hit);
+					}
+				}
 			}
 		}
 	};
 
-	class AddWhiteBox : public Observer<WhiteNotify, Message::WhiteBox>
+	class HitEvent : public Observer<HitNotify, Message::Hit>
 	{
 	private:
-		WhiteNotify * pTest;
+		HitNotify * pTest;
 	public:
-		AddWhiteBox() = default;
-		AddWhiteBox(const AddWhiteBox*) = delete;
-		AddWhiteBox(AddWhiteBox*) = delete;
-		AddWhiteBox(const AddWhiteBox&) = delete;
-		AddWhiteBox(const AddWhiteBox&&) = delete;
-		void operator()(ECS::Entity& e)
+		void operator()()
 		{
-			pTest = new WhiteNotify(e);
+			pTest = new HitNotify();
 			pTest->AddObserver(this);
 			pTest->doSomething();
 		}
-		~AddWhiteBox()
+		~HitEvent()
 		{
 			Memory::SafeDelete(pTest);
 		}
-		void UpDate([[maybe_unused]]WhiteNotify* sender,
+		void UpDate([[maybe_unused]]HitNotify* sender,
 			[[maybe_unused]]const std::string& key_) override
 		{
-			DOUT << Message::WhiteBox << std::endl;
-			if (!pTest->me->HasComponent<ECS::HitBase>())
-			{
-				pTest->me->AddComponent<ECS::HitBase>(50.f, 50.f);
-			}
+			DOUT << Message::Hit << std::endl;
+			//まずコリジョンを消す
+			pTest->atkCollision->Destroy();
+			pTest->defenceCollision->DeleteComponent<ECS::HitBase>();
+			PlaySoundMem(ResourceManager::GetSound().GetHandle("hitSE"), DX_PLAYTYPE_BACK);
+			//何らかの死亡演出がある場合こんな感じにする
+			pTest->defenceCollision->AddComponent<ECS::KillEntity>(10);  //10フレーム後に死ぬ
 		}
 	};
-
 }

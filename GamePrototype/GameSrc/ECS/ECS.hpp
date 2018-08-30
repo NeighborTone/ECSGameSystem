@@ -189,6 +189,11 @@ namespace ECS
 			auto ptr(componentArray[GetComponentTypeID<T>()]);
 			return *static_cast<T*>(ptr);
 		}
+
+		const std::string& GetTag() const
+		{
+			return tag;
+		}
 	};
 
 	//Entity“Š‡ƒNƒ‰ƒX

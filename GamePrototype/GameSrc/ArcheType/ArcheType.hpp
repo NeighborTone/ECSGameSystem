@@ -1,6 +1,6 @@
 #pragma once
 #include "../GameSrc/ECS/ECS.hpp"
-#include "../GameSrc/Components/Transform.hpp"
+#include "../GameSrc/Components/Components.hpp"
 #include "../GameController/Test/Game.h"
 namespace ECS
 {
@@ -11,34 +11,38 @@ namespace ECS
 		{
 			auto& entity(ECS::EcsSystem::GetManager().AddEntity());
 			entity.AddComponent<ECS::Transform>().SetPosition(x, y);
-			entity.GetComponent<ECS::Transform>().SetVelocity(5.f, 5.f);
+			entity.AddComponent<ECS::Physics>().SetVelocity(5.f, 5.f);
+			entity.GetComponent<ECS::Gravity>().val = 9.8f / 60 / 60;
 			entity.AddComponent<ECS::Direction>();
 			entity.AddComponent<ECS::InputMove>();
+			entity.AddComponent<ECS::InputJump>(-10.f, -3.f);
 			entity.AddComponent<ECS::InputAttack>();
-			entity.AddComponent<ECS::HitBase>(64.f, 64.f).SetColor(0, 255, 0);
+			entity.AddComponent<ECS::HitBase>(64.f, 64.f).SetColor(255, 255, 0);
+			entity.AddComponent<ECS::FootBase>(64.f, 1.f).SetColor(255, 0, 255);
+			entity.GetComponent<ECS::FootBase>().SetOffset(0.f,64.f);
 			entity.AddComponent<ECS::AnimationDraw>(name);
 			entity.AddComponent<ECS::PlayerAnimation>();
-			entity.AddGroup(Game::GameGroup::Player);
+			entity.AddGroup(ENTITY_GROUP::Player);
 			return &entity;
 		}
 	};
 	//$Test$
 	//緑色の箱の原型(ArcheType)を作る
-	class GreenBoxArcheType : public ECS::IArcheType<>
+	class GreenBoxArcheType : public ECS::IArcheType<float,float>
 	{
 	public:
-		ECS::Entity* operator()() override
+		ECS::Entity* operator()(const float x, const float y) override
 		{
 			auto& entity(ECS::EcsSystem::GetManager().AddEntity());
-			entity.AddComponent<ECS::Transform>().SetPosition(100.f, 100.f);
-			entity.AddComponent<ECS::HitBase>(20.f, 20.f).SetColor(0, 255, 0);
-			entity.AddGroup(Game::GameGroup::Box);
+			entity.AddComponent<ECS::Transform>().SetPosition(x, y);
+			entity.AddComponent<ECS::HitBase>(1280.f, 100.f).SetColor(0, 255, 0);
+			entity.AddGroup(ENTITY_GROUP::Map);
 			return &entity;
 		}
 	};
 
 	//$Test$
-	//青色の箱の原型(ArcheType)を作る。また、引数にfloat変数を2つ受け取れる
+	//青色の箱の原型(ArcheType)を作る。
 	class BlueBoxArcheType : public ECS::IArcheType<float, float>
 	{
 	public:
@@ -48,7 +52,7 @@ namespace ECS
 			entity.AddComponent<ECS::Transform>().SetPosition(x, y);
 			entity.AddComponent<ECS::HitBase>(64.f, 64.f).SetColor(0, 0, 255);
 			entity.GetComponent<ECS::HitBase>().FillEnable();
-			entity.AddGroup(Game::GameGroup::Box);
+			entity.AddGroup(ENTITY_GROUP::Enemy);
 			return &entity;
 		}
 	};
@@ -63,7 +67,7 @@ namespace ECS
 			auto& entity(ECS::EcsSystem::GetManager().AddEntity());
 			entity.AddComponent<ECS::Transform>().SetPosition(300.f, 300.f);
 			entity.AddComponent<ECS::HitBase>(20.f, 20.f).SetColor(r, g, b);
-			entity.AddGroup(Game::GameGroup::Box);
+			entity.AddGroup(ENTITY_GROUP::Enemy);
 			return &entity;
 		}
 	};
@@ -74,9 +78,9 @@ namespace ECS
 		{
 			auto& entity(ECS::EcsSystem::GetManager().AddEntityAddTag("PlayerAttack"));
 			entity.AddComponent<ECS::Transform>().SetPosition(v.x, v.y);
-			entity.AddComponent<ECS::HitBase>(20.f, 60.f).SetColor(255, 0, 0);
+			entity.AddComponent<ECS::HitBase>(25.f, 60.f).SetColor(255, 0, 0);
 			entity.AddComponent<KillEntity>(25);
-			entity.AddGroup(Game::GameGroup::PlayerAttackCollision);
+			entity.AddGroup(ENTITY_GROUP::PlayerAttackCollision);
 			return &entity;
 		}
 	};

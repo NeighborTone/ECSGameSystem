@@ -22,6 +22,8 @@ private:
 		SetGraphMode(SCREEN_WIDIH, SCREEN_HEIGHT, 32);
 		//ウィンドウモード変更
 		ChangeWindowMode(WinMessageBox::IsFullScreen());
+		//XAudio2を使用する(オーディオインターフェースを使用したときに、フルスクルーン時に正しく音が再生されなくなった(要検証))
+		SetEnableXAudioFlag(true);
 		//初期化
 		DxLib_Init();
 		assert(DxLib_IsInit());

@@ -2,52 +2,81 @@
 #include "Observer.hpp"
 #include "../ECS/ECS.hpp"
 #include "EventList.hpp"
-#include "../Components/Transform.hpp"
+#include "../Components/Components.hpp"
 #include "../Utility/Utility.hpp"
+#include "../GameSrc/GameController/Test/Game.h"
 #include <Windows.h>
 namespace Event
 {
-	class RedNotify : public Subject<RedNotify>
+	class SceneNotify : public Subject<SceneNotify>
 	{
 	public:
-		ECS::Entity* me;
-		explicit RedNotify(ECS::Entity& e)
-		{
-			me = &e;
-		}
 		//doSomething()Ç≈í ím
 		void doSomething() {
 			//é¿ç€Ç…ÇµÇƒÇŸÇµÇ¢èàóù(Observer)Ç…í ímÇëóÇÈ
-			if (GetAsyncKeyState(VK_RETURN) & 0x8001)
-			{
-				Call(Message::RedBox);
-			}
+			Call(Message::SceneChange);
 		}
 	};
 
-	class AddRedBox : public Observer<RedNotify, Message::RedBox>
+	class SceneChange : public Observer<SceneNotify, Message::SceneChange>
 	{
 	private:
-		RedNotify* pTest;
+		SceneNotify * pTest;
 	public:
-		void operator()(ECS::Entity& e)
+		void operator()()
 		{
-			pTest = new RedNotify(e);
+			pTest = new SceneNotify();
 			pTest->AddObserver(this);
 			pTest->doSomething();
 		}
-		~AddRedBox()
+		~SceneChange()
 		{
 			Memory::SafeDelete(pTest);
 
 		}
-		void UpDate([[maybe_unused]]RedNotify* sender,
+		void UpDate([[maybe_unused]]SceneNotify* sender,
 			[[maybe_unused]]const std::string& key_) override
 		{
-			DOUT << Message::RedBox << std::endl;
-			if (!pTest->me->HasComponent<ECS::HitBase>())
+			if (Input::GetKey(KEY_INPUT_R) == 1)
 			{
-				pTest->me->AddComponent<ECS::HitBase>(50.f, 50.f).SetColor(255,0,0);
+				Game::GetScene().Change(Game::Scene::Reset);
+				DOUT << "Reset" << std::endl;
+			}
+			switch (Game::GetScene().Current())
+			{
+			case Game::Scene::Title:
+				if (Input::GetKey(KEY_INPUT_X) == 1)
+				{
+					Game::GetScene().Change(Game::Scene::Play);
+					DOUT << "Play" << std::endl;
+				}
+				break;
+			case Game::Scene::Play:
+				if (Input::GetKey(KEY_INPUT_X) == 1)
+				{
+					Game::GetScene().Change(Game::Scene::Pause);
+					DOUT << "Pause" << std::endl;
+				}
+				break;
+			case Game::Scene::Pause:
+				if (Input::GetKey(KEY_INPUT_X) == 1)
+				{
+					Game::GetScene().Change(Game::Scene::Play);
+					DOUT << "Play" << std::endl;
+				}
+				if (Input::GetKey(KEY_INPUT_Z) == 1)
+				{
+					Game::GetScene().Change(Game::Scene::End);
+					DOUT << "End" << std::endl;
+				}
+				break;
+			case Game::Scene::End:
+				if (Input::GetKey(KEY_INPUT_X) == 1)
+				{
+					Game::GetScene().Change(Game::Scene::Title);
+					DOUT << "Title" << std::endl;
+				}
+				break;
 			}
 		}
 	};

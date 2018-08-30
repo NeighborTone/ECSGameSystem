@@ -60,9 +60,6 @@
     <ClInclude Include="GameSrc\Events\Observer.hpp">
       <Filter>GameSrc\Events</Filter>
     </ClInclude>
-    <ClInclude Include="GameSrc\Components\Transform.hpp">
-      <Filter>GameSrc\Components</Filter>
-    </ClInclude>
     <ClInclude Include="GameSrc\Utility\Vec.hpp">
       <Filter>GameSrc\Utility</Filter>
     </ClInclude>
@@ -110,6 +107,12 @@
     </ClInclude>
     <ClInclude Include="GameSrc\Collision\Collision.hpp">
       <Filter>GameSrc\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\Events\Event4.hpp">
+      <Filter>GameSrc\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\Components\Components.hpp">
+      <Filter>GameSrc\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
