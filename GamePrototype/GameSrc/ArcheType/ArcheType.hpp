@@ -19,12 +19,17 @@ namespace ECS
 			entity.AddComponent<ECS::InputAttack>();
 			entity.AddComponent<ECS::HitBase>(52.f, 50.f).SetColor(255, 255, 0);
 			entity.GetComponent<ECS::HitBase>().SetOffset(7.f, 10.f);
-			//entity.GetComponent<ECS::HitBase>().DrawDisable();
+			entity.GetComponent<ECS::HitBase>().DrawDisable();
 			entity.AddComponent<ECS::FootBase>(32.f, 1.f).SetColor(255, 0, 255);
 			entity.GetComponent<ECS::FootBase>().SetOffset(18.f, 63.f);
+			entity.GetComponent<ECS::FootBase>().DrawDisable();
 			entity.AddComponent<ECS::HeadBase>(32.f, 1.f).SetColor(255, 0, 255);
 			entity.GetComponent<ECS::HeadBase>().SetOffset(18.f, 10.f);
-			//entity.GetComponent<ECS::FootBase>().DrawDisable();
+			entity.GetComponent<ECS::HeadBase>().DrawDisable();
+			entity.AddComponent<ECS::SideBase>(1.f, 50.f).SetColor(255, 0, 255);
+			entity.GetComponent<ECS::SideBase>().SetOffset(7.f, 10.f);
+			entity.GetComponent<ECS::SideBase>().DrawDisable();
+			entity.AddComponent<ECS::AnimationState>(ECS::AnimationState::Idol);
 			entity.AddComponent<ECS::AnimationDraw>(name);
 			entity.AddComponent<ECS::PlayerAnimation>();
 			entity.AddGroup(ENTITY_GROUP::Player);
@@ -40,7 +45,7 @@ namespace ECS
 		{
 			auto& entity(ECS::EcsSystem::GetManager().AddEntity());
 			entity.AddComponent<ECS::Transform>().SetPosition(x, y);
-			entity.AddComponent<ECS::HitBase>(w, h).SetColor(0, 255, 0);
+			entity.AddComponent<ECS::HitBase>(w, h).SetColor(10, 128, 20);
 			entity.AddGroup(ENTITY_GROUP::Map);
 			return &entity;
 		}
@@ -89,5 +94,29 @@ namespace ECS
 			return &entity;
 		}
 	};
-
+	class BackArcheType : public ECS::IArcheType<>
+	{
+	public:
+		ECS::Entity* operator()() override
+		{
+			auto& entity(ECS::EcsSystem::GetManager().AddEntityAddTag("back"));
+			entity.AddComponent<ECS::Position>();
+			entity.AddComponent<ECS::SimpleDraw>("back");
+			//entity.AddGroup(ENTITY_GROUP::PlayerAttackCollision);
+			return &entity;
+		}
+	};
+	class MapArcheType : public ECS::IArcheType<const char*,float,float,int,int,int,int>
+	{
+	public:
+		ECS::Entity* operator()(const char* name,const float x, const float y, const int srcX, const int srcY,const int w, const int h) override
+		{
+			auto& entity(ECS::EcsSystem::GetManager().AddEntity());
+			entity.AddComponent<ECS::Position>(x,y);
+			entity.AddComponent<ECS::RectDraw>(name, srcX, srcY, w, h);
+			entity.AddComponent<ECS::HitBase>(static_cast<float>(w), static_cast<float>(h)).DrawDisable();
+			entity.AddGroup(ENTITY_GROUP::Map);
+			return &entity;
+		}
+	};
 }

@@ -58,6 +58,21 @@ namespace ECS
 		Gravity(const float g) :val(g) {}
 	};
 
+	struct AnimationState : public ComponentData
+	{
+		enum State : short
+		{
+			Idol,
+			Jump,
+			Fall,
+			Run,
+			Attack,
+		};
+		State val;
+		AnimationState() = default;
+		AnimationState(const State& state) : val(state) {}
+	};
+
 	class Physics : public Component
 	{
 	private:
@@ -89,6 +104,7 @@ namespace ECS
 			gravity->val = g;
 		}
 	};
+
 	class Transform : public Component
 	{
 	private:
@@ -332,6 +348,91 @@ namespace ECS
 		float y() const override { return pos->val.y + offSetPos.y; }
 	};
 
+	//側面矩形の定義
+	class SideBase : public Component, public IBoxColiider
+	{
+	private:
+		Position * pos = nullptr;
+		Direction* dir = nullptr;
+		Vec2 offSetPos;
+		float W, H;
+		unsigned int color = 4294967295;
+		bool isFill = false;
+		bool isDraw = true;
+	public:
+		explicit SideBase(const float ww, const float hh)
+		{
+			W = ww;
+			H = hh;
+		}
+		~SideBase()
+		{
+			pos = nullptr;
+		}
+		void Initialize() override
+		{
+			pos = &entity->GetComponent<Position>();
+			dir = &entity->GetComponent<Direction>();
+		}
+		void Draw2D() override
+		{
+			if (!entity->IsActive())
+			{
+				DrawDisable();
+			}
+			if (isDraw)
+			{
+				auto convert = pos->val.OffSetCopy(offSetPos.x, offSetPos.y);
+				auto convert2 = convert - Camera::Get().pos;
+				if (dir->val == Direction::Dir::R)
+				{
+					DrawBoxAA(
+						convert2.x + 50,
+						convert2.y,
+						convert2.x + 50 + w(),
+						convert2.y + h(),
+						color, isFill, 2);
+				}
+				else if (dir->val == Direction::Dir::L)
+				{
+				
+					DrawBoxAA(
+						convert2.x,
+						convert2.y,
+						convert2.x + w(),
+						convert2.y + h(),
+						color, isFill, 2);
+				}
+				
+				
+			}
+		}
+		void SetColor(const int r, const int g, const int b) override
+		{
+			color = GetColor(r, g, b);
+		}
+		void SetOffset(const float x, const float y) override
+		{
+			offSetPos.x = x;
+			offSetPos.y = y;
+		}
+		void FillEnable() override { isFill = true; }
+		void FillDisable() override { isFill = false; }
+		void DrawEnable() override { isDraw = true; }
+		void DrawDisable() override { isDraw = false; }
+		float w() const override { return W; }
+		float h() const override { return H; }
+		float x() const override 
+		{
+			if (dir->val == Direction::Dir::R)
+			{
+				return pos->val.x + 50 + offSetPos.x;
+			}
+			return pos->val.x + offSetPos.x;
+		}
+		float y() const override { return pos->val.y + offSetPos.y; }
+	};
+
 	//指定したフレーム後にEntityを殺す
 	class KillEntity : public Component
 	{
@@ -384,10 +485,40 @@ namespace ECS
 				auto convert = pos->val - Camera::Get().pos;
 				DrawGraphF(convert.x, convert.y, ResourceManager::GetGraph().GetHandle(name), true);
 			}
-
 		}
 	};
-
+	class RectDraw : public Component
+	{
+	private:
+		Position * pos = nullptr;
+		RECT rect;
+		std::string name;
+	public:
+		RectDraw(const char* name_,const int srcX, const int srcY, const int w, const int h)
+		{
+			if (!ResourceManager::GetGraph().IsExistenceHandle(name_))
+			{
+				assert(false);
+			}
+			rect.left = srcX;
+			rect.right = srcY;
+			rect.bottom = w;
+			rect.top = h;
+			name = name_;
+		}
+		void Initialize() override
+		{
+			pos = &entity->GetComponent<Position>();
+		}
+		void Draw2D() override
+		{
+			if (ResourceManager::GetGraph().IsExistenceHandle(name))
+			{
+				auto convert = pos->val - Camera::Get().pos;
+				DrawRectGraphF(convert.x, convert.y, rect.left, rect.right, rect.bottom, rect.top,ResourceManager::GetGraph().GetHandle(name), true);
+			}
+		}
+	};
 	//Animation
 	class AnimationDraw : public Component
 	{
@@ -453,8 +584,8 @@ namespace ECS
 	{
 	private:
 		Position * pos = nullptr;
+		Velocity* vel = nullptr;
 		Gravity* gravity;
-		Vec2 pre;
 		bool isStop = false;
 		bool isLanding;
 		bool isHeading;
@@ -472,10 +603,10 @@ namespace ECS
 		{
 			pos = &entity->GetComponent<Position>();
 			gravity = &entity->GetComponent<Gravity>();
+			vel = &entity->GetComponent<Velocity>();
 		}
 		void UpDate() override
 		{
-			pre = pos->val;
 			//頭をぶつけた
 			if (IsJumping())
 			{
@@ -513,46 +644,20 @@ namespace ECS
 			}
 			pos->val.y += fallSpeed;
 		}
-		//移動前の座標取得
-		const Vec2& GetPrePos() const
-		{
-			return pre;
-		}
 		//ジャンプ中か
-		const bool IsJumping() const
-		{
-			return isJump;
-		}
+		const bool IsJumping() const { return isJump; }
 		//落下中か
-		const bool IsFalling() const
-		{
-			return isFall;
-		}
+		const bool IsFalling() const { return isFall; }
 		//着地中か
-		const bool IsLanding() const
-		{
-			return isLanding;
-		}
+		const bool IsLanding() const { return isLanding; }
 		//入力を無効にする
-		void Stop()
-		{
-			isStop = true;
-		}
+		void Stop() { isStop = true; }
 		//入力を許可する
-		void GoMove()
-		{
-			isStop = false;
-		}
+		void GoMove() { isStop = false;	}
 		//足元判定をセット
-		void Landing(const bool hit)
-		{
-			isLanding = hit;
-		}
+		void Landing(const bool hit) { isLanding = hit; }
 		//頭上判定をセット
-		void Heading(const bool hit)
-		{
-			isHeading = hit;
-		}
+		void Heading(const bool hit) { isHeading = hit; }
 	};
 
 	class InputMove : public Component
@@ -593,25 +698,13 @@ namespace ECS
 			}
 		}
 		//移動前の座標取得
-		const Vec2& GetPrePos() const
-		{
-			return pre;
-		}
+		const Vec2& GetPrePos() const { return pre; }
 		//動いたか
-		const bool IsMoved() const
-		{
-			return isMove;
-		}
+		const bool IsMoved() const { return isMove; }
 		//入力を無効にする
-		void Stop()
-		{
-			isStop = true;
-		}
+		void Stop() { isStop = true; }
 		//入力を許可する
-		void GoMove()
-		{
-			isStop = false;
-		}
+		void GoMove() { isStop = false; }
 	};
 
 	class InputAttack : public Component
@@ -662,16 +755,7 @@ namespace ECS
 	class PlayerAnimation : public Component
 	{
 	private:
-		enum State
-		{
-			Idol,
-			Jump,
-			Fall,
-			Run,
-			Attack,
-			JumpAttack
-		};
-		State state = Idol;
+		AnimationState* state;
 		InputAttack* inputAttack;
 		InputMove* inputMove;
 		InputJump* inputJump;
@@ -689,33 +773,34 @@ namespace ECS
 
 			if (inputJump->IsLanding() && inputMove->IsMoved())
 			{
-				state = Run;
+				state->val = AnimationState::State::Run;
 				DrawFormatString(300, 40, 0xffffffffu, "Run");
 			}
 			else if (!inputJump->IsLanding() &&
 				inputJump->IsJumping() &&
 				!inputAttack->IsAttacking())
 			{
-				state = Jump;
+				state->val = AnimationState::State::Jump;
 				DrawFormatString(300, 60, 0xffffffffu, "Jump");
 			}
 			else if (!inputJump->IsLanding() && inputJump->IsFalling())
 			{
-				state = Fall;
+				state->val = AnimationState::State::Fall;
 				DrawFormatString(300, 60, 0xffffffffu, "Fall");
 			}
 			else
 			{
-				state = Idol;
+				state->val = AnimationState::State::Idol;
 				if (!inputAttack->IsAttacking())
 				{
 					DrawFormatString(300, 80, 0xffffffffu, "Idol");
 				}
 			}
-			if (state != Jump && state != Fall &&
+			if (state->val != AnimationState::State::Jump &&
+				state->val != AnimationState::State::Fall &&
 				inputAttack->IsAttacking())
 			{
-				state = Attack;
+				state->val = AnimationState::State::Attack;
 				DrawFormatString(300, 20, 0xffffffffu, "Attack");
 			}
 		}
@@ -725,36 +810,43 @@ namespace ECS
 			inputMove = &entity->GetComponent<InputMove>();
 			inputJump = &entity->GetComponent<InputJump>();
 			anim = &entity->GetComponent<AnimationDraw>();
+			state = &entity->GetComponent<AnimationState>();
 			inputAttack = &entity->GetComponent<InputAttack>();
 			idolCnt.SetCounter(1.f, 0.15f, 1.f, 5.f);
 			runningCnt.SetCounter(6.f, 0.15f, 6.f, 11.f);
 			attackingCnt.SetCounter(24.f, 0.2f, 24.f, 29.f);
-			jumpCnt.SetCounter(19.f, 0.f, 19.f, 19.f);
-			fallCnt.SetCounter(21.f, 0.f, 21.f, 21.f);
+			jumpCnt.SetCounter(18.f, 0.1f, 18.f, 20.f);
+			fallCnt.SetCounter(21.f, 0.05f, 21.f, 22.f);
 			jumpAttackingCnt.SetCounter(36.f, 0.2f, 36.f, 41.f);
 		}
 		void UpDate() override
 		{
 			AnimSelect();
-			switch (state)
+			switch (state->val)
 			{
-			case Idol:
+			case AnimationState::State::Idol:
+				fallCnt.SetCounter(21.f, 0.05f, 21.f, 22.f);
 				anim->SetIndex(static_cast<int>(++idolCnt));
 				inputAttack->GoMove();
 				break;
-			case Jump:
-				anim->SetIndex(static_cast<int>(++jumpCnt));
+			case AnimationState::State::Jump:
+				fallCnt.SetCounter(21.f, 0.05f, 21.f, 22.f);
+				jumpCnt.Add();
+				anim->SetIndex(static_cast<int>(jumpCnt.GetCurrentCount()));
 				inputAttack->Stop();
 				break;
-			case Fall:
-				anim->SetIndex(static_cast<int>(++fallCnt));
+			case AnimationState::State::Fall:
+				jumpCnt.SetCounter(18.f, 0.1f, 18.f, 20.f);
+				fallCnt.Add();
+				anim->SetIndex(static_cast<int>(fallCnt.GetCurrentCount()));
 				inputAttack->Stop();
 				break;
-			case Run:
+			case AnimationState::State::Run:
+				fallCnt.SetCounter(21.f, 0.05f, 21.f, 22.f);
 				anim->SetIndex(static_cast<int>(++runningCnt));
 				inputAttack->GoMove();
 				break;
-			case Attack:
+			case AnimationState::State::Attack:
 				inputMove->Stop();
 				inputJump->Stop();
 				anim->SetIndex(static_cast<int>(++attackingCnt));

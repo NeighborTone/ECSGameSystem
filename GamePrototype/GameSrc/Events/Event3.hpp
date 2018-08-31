@@ -16,6 +16,7 @@ namespace Event
 			if (Game::GetScene().Current() == Game::Scene::Play)
 			{
 				const auto& player = ECS::EcsSystem::GetManager().GetEntitiesByGroup(ENTITY_GROUP::Player);
+				const auto& atk = ECS::EcsSystem::GetManager().GetEntitiesByGroup(ENTITY_GROUP::PlayerAttackCollision);
 				for (const auto& it : player)
 				{
 					if (it->HasComponent<ECS::InputAttack>())
@@ -24,6 +25,28 @@ namespace Event
 						{
 							//ŽÀÛ‚É‚µ‚Ä‚Ù‚µ‚¢ˆ—(Observer)‚É’Ê’m‚ð‘—‚é
 							Call(Message::PlayerAttack);
+						}
+					}
+				}
+				if (atk.empty())
+				{
+					return;
+				}
+				for (const auto& it_p : player)
+				{
+					for (auto& it_a : atk)
+					{
+						if (it_p->GetComponent<ECS::Direction>().val == ECS::Direction::Dir::R)
+						{
+							it_a->GetComponent<ECS::Position>().val =
+								it_p->GetComponent<ECS::Position>().val.OffSetCopy(64.f, 0);
+
+						}
+						if (it_p->GetComponent<ECS::Direction>().val == ECS::Direction::Dir::L)
+						{
+							it_a->GetComponent<ECS::Position>().val = 
+								it_p->GetComponent<ECS::Position>().val.OffSetCopy(-20.f, 0);
+
 						}
 					}
 				}
@@ -51,21 +74,8 @@ namespace Event
 		void UpDate([[maybe_unused]]AttackNotify* sender,
 			[[maybe_unused]]const std::string& key_) override
 		{
-			const auto& player = ECS::EcsSystem::GetManager().GetEntitiesByGroup(ENTITY_GROUP::Player);
-			for (const auto& it : player)
-			{
-				if (it->GetComponent<ECS::Direction>().val == ECS::Direction::Dir::R)
-				{
-					DOUT << Message::PlayerAttack << std::endl;
-					ECS::AttackCollisionBoxArcheType()(it->GetComponent<ECS::Position>().val.OffSetCopy(64.f, 0));
-				}
-				if (it->GetComponent<ECS::Direction>().val == ECS::Direction::Dir::L)
-				{
-					DOUT << Message::PlayerAttack << std::endl;
-					ECS::AttackCollisionBoxArcheType()(it->GetComponent<ECS::Position>().val.OffSetCopy(-20.f, 0));
-				}
-			}
+			DOUT << Message::PlayerAttack << std::endl;
+			ECS::AttackCollisionBoxArcheType()(Vec2(0,0));
 		}
 	};
-
 }

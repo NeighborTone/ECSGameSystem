@@ -20,6 +20,7 @@ private:
 	ECS::Entity* player;
 	ECS::Entity* hitBox[5];
 	ECS::Entity* ground[5];
+	ECS::Entity* back;
 	bool isReset = true;
 	void EventUpDate(); 
 

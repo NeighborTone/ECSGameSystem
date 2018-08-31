@@ -7,6 +7,7 @@
 #include "../ArcheType/ArcheType.hpp"
 #include "../GameController/Test/Game.h"
 #include "../Collision/Collision.hpp"
+//主にプレーヤーとマップの衝突応答の処理
 namespace Event
 {
 	class LandingNotify : public Subject<LandingNotify>
@@ -23,9 +24,9 @@ namespace Event
 					if (Collision::BoxAndBox<ECS::FootBase, ECS::HitBase>(*player, *map))
 					{
 						Call(Message::Landing);
-						//いい感じにめり込まないよう強引に調整(-5は適当...)
+						//いい感じにめり込まないよう強引に調整(-10は適当)
 						player->GetComponent<ECS::Position>().val.y =
-							map->GetComponent<ECS::Position>().val.y - player->GetComponent<ECS::HitBase>().h() - 5;
+							map->GetComponent<ECS::Position>().val.y - player->GetComponent<ECS::HitBase>().h() - 10;
 						break;
 					}
 					else
@@ -37,12 +38,12 @@ namespace Event
 		}
 	};
 
-	class PlayerLanding : public Observer<LandingNotify, Message::Landing>
+	class PlayerLandingCheke : public Observer<LandingNotify, Message::Landing>
 	{
 	private:
 		LandingNotify * pTest;
 	public:
-		PlayerLanding() = default;
+		PlayerLandingCheke() = default;
 
 		void operator()()
 		{
@@ -50,7 +51,7 @@ namespace Event
 			pTest->AddObserver(this);
 			pTest->doSomething();
 		}
-		~PlayerLanding()
+		~PlayerLandingCheke()
 		{
 			Memory::SafeDelete(pTest);
 		}
@@ -119,6 +120,61 @@ namespace Event
 			{
 				DOUT << Message::Heading << std::endl;
 				player->GetComponent<ECS::InputJump>().Heading(true);
+			}
+		}
+	};
+
+	class SideNotify : public Subject<SideNotify>
+	{
+	public:
+		//doSomething()で通知
+		void doSomething() {
+			const auto& p = ECS::EcsSystem::GetManager().GetEntitiesByGroup(ENTITY_GROUP::Player);
+			const auto& m = ECS::EcsSystem::GetManager().GetEntitiesByGroup(ENTITY_GROUP::Map);
+			for (const auto& player : p)
+			{
+				for (const auto& map : m)
+				{
+					if (Collision::BoxAndBox<ECS::SideBase, ECS::HitBase>(*player, *map))
+					{
+						Call(Message::SideHit);
+						break;
+					}
+					else
+					{
+						player->GetComponent<ECS::Velocity>().val = 5.f;
+					}
+				}
+			}
+		}
+	};
+
+	class PlayerSideCheck : public Observer<SideNotify, Message::SideHit>
+	{
+	private:
+		SideNotify * pTest;
+	public:
+		PlayerSideCheck() = default;
+
+		void operator()()
+		{
+			pTest = new SideNotify();
+			pTest->AddObserver(this);
+			pTest->doSomething();
+		}
+		~PlayerSideCheck()
+		{
+			Memory::SafeDelete(pTest);
+		}
+		void UpDate([[maybe_unused]]SideNotify* sender,
+			[[maybe_unused]]const std::string& key_) override
+		{
+			const auto& p = ECS::EcsSystem::GetManager().GetEntitiesByGroup(ENTITY_GROUP::Player);
+			for (const auto& player : p)
+			{
+				DOUT << Message::SideHit << std::endl;
+
+				player->GetComponent<ECS::Velocity>().val = 0;
 			}
 		}
 	};

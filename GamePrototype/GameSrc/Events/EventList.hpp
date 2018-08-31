@@ -10,5 +10,6 @@ namespace Event
 		inline static const std::string PlayerAttack = "attack!";
 		inline static const std::string Landing = "landing!";
 		inline static const std::string Heading = "heading!";
+		inline static const std::string SideHit = "sideHit!";
 	};
 }
