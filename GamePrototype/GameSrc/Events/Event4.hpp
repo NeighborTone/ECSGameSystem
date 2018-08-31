@@ -65,4 +65,61 @@ namespace Event
 			}
 		}
 	};
+
+	class HeadNotify : public Subject<HeadNotify>
+	{
+	public:
+		//doSomething()�Œʒm
+		void doSomething() {
+			const auto& p = ECS::EcsSystem::GetManager().GetEntitiesByGroup(ENTITY_GROUP::Player);
+			const auto& m = ECS::EcsSystem::GetManager().GetEntitiesByGroup(ENTITY_GROUP::Map);
+			for (const auto& player : p)
+			{
+				for (const auto& map : m)
+				{
+					if (Collision::BoxAndBox<ECS::HeadBase, ECS::HitBase>(*player, *map))
+					{
+						if (player->GetComponent<ECS::InputJump>().IsJumping())
+						{
+							Call(Message::Heading);
+							break;
+						}
+					}
+					else
+					{
+						player->GetComponent<ECS::InputJump>().Heading(false);
+					}
+				}
+			}
+		}
+	};
+
+	class PlayerHeadCheck : public Observer<HeadNotify, Message::Heading>
+	{
+	private:
+		HeadNotify * pTest;
+	public:
+		PlayerHeadCheck() = default;
+
+		void operator()()
+		{
+			pTest = new HeadNotify();
+			pTest->AddObserver(this);
+			pTest->doSomething();
+		}
+		~PlayerHeadCheck()
+		{
+			Memory::SafeDelete(pTest);
+		}
+		void UpDate([[maybe_unused]]HeadNotify* sender,
+			[[maybe_unused]]const std::string& key_) override
+		{
+			const auto& p = ECS::EcsSystem::GetManager().GetEntitiesByGroup(ENTITY_GROUP::Player);
+			for (const auto& player : p)
+			{
+				DOUT << Message::Heading << std::endl;
+				player->GetComponent<ECS::InputJump>().Heading(true);
+			}
+		}
+	};
 }

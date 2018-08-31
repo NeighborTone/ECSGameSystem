@@ -271,6 +271,67 @@ namespace ECS
 		float y() const override { return pos->val.y + offSetPos.y; }
 	};
 
+	//頭矩形の定義
+	class HeadBase : public Component, public IBoxColiider
+	{
+	private:
+		Position * pos = nullptr;
+		Vec2 offSetPos;
+		float W, H;
+		unsigned int color = 4294967295;
+		bool isFill = false;
+		bool isDraw = true;
+	public:
+		explicit HeadBase(const float ww, const float hh)
+		{
+			W = ww;
+			H = hh;
+		}
+		~HeadBase()
+		{
+			pos = nullptr;
+		}
+		void Initialize() override
+		{
+			pos = &entity->GetComponent<Position>();
+		}
+		void Draw2D() override
+		{
+			if (!entity->IsActive())
+			{
+				DrawDisable();
+			}
+			if (isDraw)
+			{
+				auto convert = pos->val.OffSetCopy(offSetPos.x, offSetPos.y);
+				auto convert2 = convert - Camera::Get().pos;
+				DrawBoxAA(
+					convert2.x,
+					convert2.y,
+					convert2.x + w(),
+					convert2.y + h(),
+					color, isFill, 2);
+			}
+		}
+		void SetColor(const int r, const int g, const int b) override
+		{
+			color = GetColor(r, g, b);
+		}
+		void SetOffset(const float x, const float y) override
+		{
+			offSetPos.x = x;
+			offSetPos.y = y;
+		}
+		void FillEnable() override { isFill = true; }
+		void FillDisable() override { isFill = false; }
+		void DrawEnable() override { isDraw = true; }
+		void DrawDisable() override { isDraw = false; }
+		float w() const override { return W; }
+		float h() const override { return H; }
+		float x() const override { return pos->val.x + offSetPos.x; }
+		float y() const override { return pos->val.y + offSetPos.y; }
+	};
+
 	//指定したフレーム後にEntityを殺す
 	class KillEntity : public Component
 	{
@@ -396,6 +457,7 @@ namespace ECS
 		Vec2 pre;
 		bool isStop = false;
 		bool isLanding;
+		bool isHeading;
 		bool isFall;
 		bool isJump;
 		float jumpPow;
@@ -414,6 +476,15 @@ namespace ECS
 		void UpDate() override
 		{
 			pre = pos->val;
+			//頭をぶつけた
+			if (IsJumping())
+			{
+				if (isHeading)
+				{
+					fallSpeed = 0.0f;
+				}
+			}
+			//着地中
 			if (isLanding)
 			{
 				fallSpeed = 0.0f;
@@ -476,6 +547,11 @@ namespace ECS
 		void Landing(const bool hit)
 		{
 			isLanding = hit;
+		}
+		//頭上判定をセット
+		void Heading(const bool hit)
+		{
+			isHeading = hit;
 		}
 	};
 

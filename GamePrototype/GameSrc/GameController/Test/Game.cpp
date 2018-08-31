@@ -61,6 +61,7 @@ void Game::EventUpDate()
 	Event::SceneChange()();
 	Event::HitEvent()();
 	Event::PlayerLanding()();
+	Event::PlayerHeadCheck()();
 }
 
 void Game::Update()

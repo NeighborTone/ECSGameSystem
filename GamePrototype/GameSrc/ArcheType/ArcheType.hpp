@@ -17,11 +17,13 @@ namespace ECS
 			entity.AddComponent<ECS::InputMove>();
 			entity.AddComponent<ECS::InputJump>(-10.f, -3.f);
 			entity.AddComponent<ECS::InputAttack>();
-			entity.AddComponent<ECS::HitBase>(52.f, 54.f).SetColor(255, 255, 0);
-			entity.GetComponent<ECS::HitBase>().SetOffset(7.f, 8.f);
+			entity.AddComponent<ECS::HitBase>(52.f, 50.f).SetColor(255, 255, 0);
+			entity.GetComponent<ECS::HitBase>().SetOffset(7.f, 10.f);
 			//entity.GetComponent<ECS::HitBase>().DrawDisable();
 			entity.AddComponent<ECS::FootBase>(32.f, 1.f).SetColor(255, 0, 255);
-			entity.GetComponent<ECS::FootBase>().SetOffset(18.f, 64.f);
+			entity.GetComponent<ECS::FootBase>().SetOffset(18.f, 63.f);
+			entity.AddComponent<ECS::HeadBase>(32.f, 1.f).SetColor(255, 0, 255);
+			entity.GetComponent<ECS::HeadBase>().SetOffset(18.f, 10.f);
 			//entity.GetComponent<ECS::FootBase>().DrawDisable();
 			entity.AddComponent<ECS::AnimationDraw>(name);
 			entity.AddComponent<ECS::PlayerAnimation>();
