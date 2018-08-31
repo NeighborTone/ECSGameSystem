@@ -1,29 +1,45 @@
 #pragma once
+#include "../GameSrc/Utility/Utility.hpp"
 #include <DxLib.h>
 class Input
 {
-public:
-	inline static int key[256];	//キーの入力状態を格納する
-	//キーの入力状態の更新
-	static void Update_Key()
+private:
+	class Singleton
 	{
-		char tmpKey[256];
-		GetHitKeyStateAll(tmpKey);	//現在のキーの状態を格納
-		for (int i = 0; i < 256; ++i)
+	public:
+		Singleton() = default;
+		Singleton(const Singleton&) = delete;
+		Singleton& operator=(const Singleton&) = delete;
+	public:
+		int key[256];	//キーの入力状態を格納する
+		//キーの入力状態の更新
+		void Update_Key()
 		{
-			if (tmpKey[i] != 0)
+			char tmpKey[256];
+			GetHitKeyStateAll(tmpKey);	//現在のキーの状態を格納
+			for (int i = 0; i < 256; ++i)
 			{
-				++key[i];
-			}
-			else  //押されていなければ
-			{
-				key[i] = 0;
+				if (tmpKey[i] != 0)
+				{
+					++key[i];
+				}
+				else  //押されていなければ
+				{
+					key[i] = 0;
+				}
 			}
 		}
-	}
-	//keycodeのキーの入力状態を取得する
-	static int GetKey(int keycode)
+		//keycodeのキーの入力状態を取得する
+		int GetKey(int keycode)
+		{
+			return key[keycode];	//keycodeの入力状態を返す
+		}
+	};
+public:
+	inline static Singleton& Get()
 	{
-		return key[keycode];	//keycodeの入力状態を返す
+		static std::unique_ptr<Singleton> inst =
+			std::make_unique<Singleton>();
+		return *inst;
 	}
 };

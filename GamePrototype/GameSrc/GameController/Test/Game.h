@@ -26,6 +26,7 @@ private:
 	class SceneManager
 	{
 	public:
+		SceneManager() = default;
 		const Scene& PrevScene() const
 		{
 			return prevScene;
@@ -43,6 +44,7 @@ private:
 		Scene scene = Title;
 		Scene prevScene = Title;
 	};
+	
 public:
 	enum class GameGroup : ECS::Group
 	{
@@ -59,7 +61,7 @@ public:
 	//Entity‚Ì•`‰æ‚ğs‚¢‚Ü‚·
 	void Draw();
 
-	static SceneManager& GetScene()
+	inline static SceneManager& GetScene()
 	{
 		static std::unique_ptr<SceneManager> inst =
 			std::make_unique<SceneManager>();

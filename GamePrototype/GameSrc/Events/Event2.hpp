@@ -37,7 +37,7 @@ namespace Event
 		void UpDate([[maybe_unused]]SceneNotify* sender,
 			[[maybe_unused]]const std::string& key_) override
 		{
-			if (Input::GetKey(KEY_INPUT_R) == 1)
+			if (Input::Get().GetKey(KEY_INPUT_R) == 1)
 			{
 				Game::GetScene().Change(Game::Scene::Reset);
 				DOUT << "Reset" << std::endl;
@@ -45,33 +45,33 @@ namespace Event
 			switch (Game::GetScene().Current())
 			{
 			case Game::Scene::Title:
-				if (Input::GetKey(KEY_INPUT_X) == 1)
+				if (Input::Get().GetKey(KEY_INPUT_X) == 1)
 				{
 					Game::GetScene().Change(Game::Scene::Play);
 					DOUT << "Play" << std::endl;
 				}
 				break;
 			case Game::Scene::Play:
-				if (Input::GetKey(KEY_INPUT_X) == 1)
+				if (Input::Get().GetKey(KEY_INPUT_X) == 1)
 				{
 					Game::GetScene().Change(Game::Scene::Pause);
 					DOUT << "Pause" << std::endl;
 				}
 				break;
 			case Game::Scene::Pause:
-				if (Input::GetKey(KEY_INPUT_X) == 1)
+				if (Input::Get().GetKey(KEY_INPUT_X) == 1)
 				{
 					Game::GetScene().Change(Game::Scene::Play);
 					DOUT << "Play" << std::endl;
 				}
-				if (Input::GetKey(KEY_INPUT_Z) == 1)
+				if (Input::Get().GetKey(KEY_INPUT_Z) == 1)
 				{
 					Game::GetScene().Change(Game::Scene::End);
 					DOUT << "End" << std::endl;
 				}
 				break;
 			case Game::Scene::End:
-				if (Input::GetKey(KEY_INPUT_X) == 1)
+				if (Input::Get().GetKey(KEY_INPUT_X) == 1)
 				{
 					Game::GetScene().Change(Game::Scene::Title);
 					DOUT << "Title" << std::endl;

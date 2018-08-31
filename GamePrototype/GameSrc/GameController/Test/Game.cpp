@@ -8,6 +8,7 @@
 #include "../GameSrc/Events/Event4.hpp"
 #include "../GameSrc/ResourceManager/ResourceManager.hpp"
 #include "../../Collision/Collision.hpp"
+#include "../GameSrc/Camera/Camera.hpp"
 #include <atltime.h>
 
 Game::Game()
@@ -68,7 +69,8 @@ void Game::Update()
 	const auto& p = pManager->GetEntitiesByGroup(ENTITY_GROUP::Player);
 	const auto& m = pManager->GetEntitiesByGroup(ENTITY_GROUP::Map);
 	const auto& c = pManager->GetEntitiesByGroup(ENTITY_GROUP::PlayerAttackCollision);
-	Input::Update_Key();
+	Input::Get().Update_Key();
+
 	pManager->Refresh();
 	EventUpDate();
 	switch (Game::GetScene().Current())
@@ -85,6 +87,10 @@ void Game::Update()
 		}
 		break;
 	case Scene::Play:
+		//カメラの制限
+		Camera::Get().pos.x = player->GetComponent<ECS::Position>().val.x - 400;
+		Camera::Get().pos.y = player->GetComponent<ECS::Position>().val.y - 500;
+		Camera::Get().UpDate();
 		for (const auto& it : m) { it->UpDate(); }
 		for (const auto& it : p) { it->UpDate(); }
 		for (const auto& it : c) { it->UpDate(); }
@@ -114,12 +120,12 @@ void Game::Draw()
 	case Scene::Pause:
 		DrawFormatString(50, 0, 0xffffffffu, "Puase");
 	case Scene::Play:
-		DrawFormatString(0, 0, 0xffffffffu, "Play");
-		DrawFormatString(200, 630, 0xffffffffu, "左右キーで移動\nZキーで攻撃\nスペースでジャンプ");
 		for (const auto& it : m) { it->Draw2D(); }
 		for (const auto& it : b) { it->Draw2D(); }
 		for (const auto& it : c) { it->Draw2D(); }
 		for (const auto& it : p) { it->Draw2D(); }
+		DrawFormatString(0, 0, 0xffffffffu, "Play");
+		DrawFormatString(200, 630, 0xffffffffu, "左右キーで移動\nZキーで攻撃\nスペースでジャンプ");
 		break;
 	case Scene::End:
 		DrawFormatString(0, 0, 0xffffffffu, "End");

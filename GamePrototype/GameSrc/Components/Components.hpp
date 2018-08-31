@@ -1,4 +1,5 @@
 #pragma once
+#include "../Camera/Camera.hpp"
 #include "../ECS/ECS.hpp"
 #include "../Utility/Vec.hpp"
 #include "../ResourceManager/ResourceManager.hpp"
@@ -181,11 +182,13 @@ namespace ECS
 			}
 			if (isDraw)
 			{
+				auto convert = pos->val.OffSetCopy(offSetPos.x, offSetPos.y);
+				auto convert2 = convert - Camera::Get().pos;
 				DrawBoxAA(
-					pos->val.x + offSetPos.x,
-					pos->val.y + offSetPos.y,
-					pos->val.x + offSetPos.x + w(),
-					pos->val.y + offSetPos.y + h(),
+					convert2.x,
+					convert2.y,
+					convert2.x + w(),
+					convert2.y + h(),
 					color, isFill, 2);
 			}
 		}
@@ -239,11 +242,13 @@ namespace ECS
 			}
 			if (isDraw)
 			{
+				auto convert = pos->val.OffSetCopy(offSetPos.x, offSetPos.y);
+				auto convert2 = convert - Camera::Get().pos;
 				DrawBoxAA(
-					pos->val.x + offSetPos.x,
-					pos->val.y + offSetPos.y,
-					pos->val.x + offSetPos.x + w(),
-					pos->val.y + offSetPos.y + h(),
+					convert2.x,
+					convert2.y,
+					convert2.x + w(),
+					convert2.y + h(),
 					color, isFill, 2);
 			}
 		}
@@ -315,7 +320,8 @@ namespace ECS
 		{
 			if (ResourceManager::GetGraph().IsExistenceHandle(name))
 			{
-				DrawGraphF(pos->val.x, pos->val.y, ResourceManager::GetGraph().GetHandle(name), true);
+				auto convert = pos->val - Camera::Get().pos;
+				DrawGraphF(convert.x, convert.y, ResourceManager::GetGraph().GetHandle(name), true);
 			}
 
 		}
@@ -357,18 +363,20 @@ namespace ECS
 			{
 				isTurn = true;
 			}
+			
 		}
 		void Draw2D() override
 		{
 			if (ResourceManager::GetGraph().IsExistenceDivHandle(name))
 			{
+				auto convert = pos->val - Camera::Get().pos;
 				if (!isTurn)
 				{
-					DrawGraphF(pos->val.x, pos->val.y, ResourceManager::GetGraph().GetDivHandle(name, index), true);
+					DrawGraphF(convert.x, convert.y, ResourceManager::GetGraph().GetDivHandle(name, index), true);
 				}
 				else
 				{
-					DrawTurnGraphF(pos->val.x, pos->val.y, ResourceManager::GetGraph().GetDivHandle(name, index), true);
+					DrawTurnGraphF(convert.x, convert.y, ResourceManager::GetGraph().GetDivHandle(name, index), true);
 				}
 			}
 		}
@@ -416,7 +424,7 @@ namespace ECS
 			}
 			if (!isStop)
 			{
-				if (isLanding && Input::GetKey(KEY_INPUT_SPACE) == 1)
+				if (isLanding && Input::Get().GetKey(KEY_INPUT_SPACE) == 1)
 				{
 					fallSpeed = jumpPow;
 				}
@@ -494,13 +502,13 @@ namespace ECS
 			isMove = false;
 			if (!isStop)
 			{
-				if (Input::GetKey(KEY_INPUT_RIGHT) >= 1)
+				if (Input::Get().GetKey(KEY_INPUT_RIGHT) >= 1)
 				{
 					pos->val.x += vel->val.x;
 					pDir->val = Direction::Dir::R;
 					isMove = true;
 				}
-				if (Input::GetKey(KEY_INPUT_LEFT) >= 1)
+				if (Input::Get().GetKey(KEY_INPUT_LEFT) >= 1)
 				{
 					pos->val.x -= vel->val.x;
 					pDir->val = Direction::Dir::L;
@@ -538,7 +546,7 @@ namespace ECS
 	public:
 		void UpDate() override
 		{
-			if (!isStop && Input::GetKey(KEY_INPUT_Z) == 1)
+			if (!isStop && Input::Get().GetKey(KEY_INPUT_Z) == 1)
 			{
 
 				isAttack = true;
@@ -557,7 +565,7 @@ namespace ECS
 		//UŒ‚‚µ‚½uŠÔ‚¾‚¯true
 		const bool IsAttacked() const
 		{
-			return Input::GetKey(KEY_INPUT_Z) == 1 && !isAttack;
+			return Input::Get().GetKey(KEY_INPUT_Z) == 1 && !isAttack;
 		}
 		//“ü—Í‚ğ–³Œø‚É‚·‚é
 		void Stop()

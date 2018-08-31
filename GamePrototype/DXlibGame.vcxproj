@@ -25,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSrc\ArcheType\ArcheType.hpp" />
+    <ClInclude Include="GameSrc\Camera\Camera.hpp" />
     <ClInclude Include="GameSrc\Collision\Collision.hpp" />
     <ClInclude Include="GameSrc\Components\Components.hpp" />
     <ClInclude Include="GameSrc\ECS\ECS.hpp" />

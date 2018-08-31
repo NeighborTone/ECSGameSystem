@@ -46,6 +46,9 @@
     <Filter Include="GameSrc\Collision">
       <UniqueIdentifier>{0ffad3b7-6236-41f3-be42-dc9720a518ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameSrc\Camera">
+      <UniqueIdentifier>{1b4a5bba-a849-4ebf-8434-a1f2d34f03a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSrc\System\System.hpp">
@@ -113,6 +116,9 @@
     </ClInclude>
     <ClInclude Include="GameSrc\Components\Components.hpp">
       <Filter>GameSrc\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSrc\Camera\Camera.hpp">
+      <Filter>GameSrc\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
