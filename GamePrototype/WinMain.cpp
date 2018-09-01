@@ -1,7 +1,6 @@
 #include <DxLib.h>
 #include "GameSrc/GameController/GameMain.hpp"
 #include "GameSrc/Utility/Console.hpp"
-//メモリリーク検知用
 #include <memory>
 #include <new>
 #include <crtdbg.h>
