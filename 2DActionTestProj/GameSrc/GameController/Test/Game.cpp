@@ -1,4 +1,4 @@
-#include "Game.h"
+ï»¿#include "Game.h"
 #include "../GameSrc/ArcheType/ArcheType.hpp"
 #include "../GameSrc/Utility/Utility.hpp"
 #include "../GameSrc/Components/Components.hpp"
@@ -13,27 +13,27 @@
 
 void Game::ResourceLoad()
 {
-	//ƒŠƒ\[ƒXƒNƒ‰ƒX‚ÌƒeƒXƒg
+	//ãƒªã‚½ãƒ¼ã‚¹ã‚¯ãƒ©ã‚¹ã®ãƒ†ã‚¹ãƒˆ
 	ResourceManager::GetGraph().LoadDiv("Resource/Act_Chara2.png", "PlayerGraphic", 48, 6, 8, 64, 64);
 	ResourceManager::GetGraph().Load("Resource/map2.png", "back");
 	ResourceManager::GetGraph().Load("Resource/back.png", "bg1");
 	ResourceManager::GetGraph().Load("Resource/gothic-castle-tileset.png", "map1");
 	ResourceManager::GetGraph().Load("Resource/gothic-castle-background.png", "map2");
 	ResourceManager::GetSound().Load("Resource/Town.wav", "bgm");
-	ResourceManager::GetSound().Load("Resource/ƒ^ƒ}ƒlƒM.ogg", "hitSE");
+	ResourceManager::GetSound().Load("Resource/ã‚¿ãƒãƒã‚®.ogg", "hitSE");
 	ResourceManager::GetSound().Load("Resource/slashing04.ogg", "atkSE");
 }
 
 Game::Game()
 {
 	{
-		//ˆ—•‰‰×‚ğŒv‘ª‚·‚é
+		//å‡¦ç†è² è·ã‚’è¨ˆæ¸¬ã™ã‚‹
 		ProcessingTime<std::chrono::milliseconds> time;
 		pManager = &ECS::EcsSystem::GetManager();
 		ResourceLoad();
 		PlaySoundMem(ResourceManager::GetSound().GetHandle("bgm"), DX_PLAYTYPE_LOOP);
 		ChangeVolumeSoundMem(255, ResourceManager::GetSound().GetHandle("bgm"));
-		//ArcheType(Œ´Œ^)‚©‚çì‚é
+		//ArcheType(åŸå‹)ã‹ã‚‰ä½œã‚‹
 		ECS::BackArcheType()("bg1");
 		player = ECS::PlayerArcheType()(100.f, 500.f, "PlayerGraphic");
 		for (auto i(0u); i < std::size(hitBox); ++i)
@@ -62,7 +62,7 @@ Game::Game()
 		}
 		for (int i = 0; i < 60; ++i)
 		{
-			if (i == 0 || i == 1 )continue;
+			if (i == 0 || i == 1 ) continue;
 			if (i == 2 || i == 3)
 			{
 				ECS::MapArcheType()("map1", (float)i * 32.f, 472.f, 0, 0, 32, 32);
@@ -92,7 +92,7 @@ Game::Game()
 void Game::ResetGame()
 {
 	{
-		//ˆ—•‰‰×‚ğŒv‘ª‚·‚é
+		//å‡¦ç†è² è·ã‚’è¨ˆæ¸¬ã™ã‚‹
 		ProcessingTime<std::chrono::milliseconds> time;
 		pManager->Initialize();
 		const auto& b = pManager->GetEntitiesByGroup(ENTITY_GROUP::Enemy);
@@ -146,7 +146,7 @@ void Game::Update()
 		}
 		break;
 	case Scene::Play:
-		//ƒJƒƒ‰‚Ì§ŒÀ
+		//ã‚«ãƒ¡ãƒ©ã®åˆ¶é™
 		Camera::Get().pos.x = player->GetComponent<ECS::Position>().val.x - 400;
 		//Camera::Get().pos.y = player->GetComponent<ECS::Position>().val.y - 480;
 		Camera::Get().UpDate();
@@ -182,7 +182,7 @@ void Game::Draw()
 		break;
 	}
 #ifdef _DEBUG
-	//ƒfƒoƒbƒO—p
+	//ãƒ‡ãƒãƒƒã‚°ç”¨
 	switch (Game::GetScene().Current())
 	{
 	case Scene::Title:
@@ -193,15 +193,16 @@ void Game::Draw()
 		[[fallthrough]];
 	case Scene::Play:
 		DrawFormatString(0, 0, 0xffffffffu, "Play");
-		DrawFormatString(200, 630, 0xffffffffu, "¶‰EƒL[‚ÅˆÚ“®\nZƒL[‚ÅUŒ‚\nƒXƒy[ƒX‚ÅƒWƒƒƒ“ƒv");
+		DrawFormatString(200, 630, 0xffffffffu, "å·¦å³ã‚­ãƒ¼ã§ç§»å‹•\nZã‚­ãƒ¼ã§æ”»æ’ƒ\nã‚¹ãƒšãƒ¼ã‚¹ã§ã‚¸ãƒ£ãƒ³ãƒ—");
 		break;
 	case Scene::End:
 		DrawFormatString(0, 0, 0xffffffffu, "End");
 		break;
 	}
+
 	DrawFormatString(0, 400, 0xffffffffu,
-		R"(XƒL[‚ÅŸ‚ÌƒV[ƒ“
-RƒL[‚ÅƒŠƒZƒbƒg
-ƒ|[ƒY’†‚ÉZƒL[‚ÅƒGƒ“ƒhƒV[ƒ“)");
+R"(Xã‚­ãƒ¼ã§æ¬¡ã®ã‚·ãƒ¼ãƒ³
+Rã‚­ãƒ¼ã§ãƒªã‚»ãƒƒãƒˆ
+ãƒãƒ¼ã‚ºä¸­ã«Zã‚­ãƒ¼ã§ã‚¨ãƒ³ãƒ‰ã‚·ãƒ¼ãƒ³)");
 #endif
 }
