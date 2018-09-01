@@ -19,11 +19,9 @@ private:
 	ECS::EntityManager* pManager;
 	ECS::Entity* player;
 	ECS::Entity* hitBox[10];
-	ECS::Entity* ground[5];
-	ECS::Entity* back;
 	bool isReset = true;
 	void EventUpDate(); 
-
+	void ResourceLoad();
 	class SceneManager
 	{
 	public:
@@ -42,7 +40,7 @@ private:
 			scene = next;
 		}
 	private:
-		Scene scene = Title;
+		Scene scene = Play;
 		Scene prevScene = Title;
 	};
 	

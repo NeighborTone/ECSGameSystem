@@ -600,12 +600,10 @@ namespace ECS
 		bool isFall;
 		bool isJump;
 		float jumpPow;
-		float fallSpeed;
 	public:
-		InputJump(const float pow, const float fall)
+		InputJump(const float pow)
 		{
 			jumpPow = pow;
-			fallSpeed = fall;
 		}
 		void Initialize() override
 		{
@@ -620,27 +618,31 @@ namespace ECS
 			{
 				if (isHeading)
 				{
-					fallSpeed = 0.0f;
+					vel->val.y = 0.0f;
 				}
 			}
 			//着地中
 			if (isLanding)
 			{
-				fallSpeed = 0.0f;
+				vel->val.y = 0.0f;
 			}
 			else
 			{
-				fallSpeed += gravity->val * 32 * 3;
+				vel->val.y += gravity->val * 32 * 3;
 			}
 			if (!isStop)
 			{
 				if (isLanding && Input::Get().GetKey(KEY_INPUT_SPACE) == 1)
 				{
-					fallSpeed = jumpPow;
+					vel->val.y = jumpPow;
+				}
+				if (IsJumping() && Input::Get().GetKey(KEY_INPUT_SPACE) == 0)
+				{
+					vel->val.y *= 0.8f;
 				}
 			}
 			//落下速度が負の値ならジャンプ中
-			if (fallSpeed < 0)
+			if (vel->val.y < 0)
 			{
 				isJump = true;
 				isFall = false;
@@ -650,7 +652,7 @@ namespace ECS
 				isJump = false;
 				isFall = true;
 			}
-			pos->val.y += fallSpeed;
+			pos->val.y += vel->val.y;
 		}
 		//ジャンプ中か
 		const bool IsJumping() const { return isJump; }

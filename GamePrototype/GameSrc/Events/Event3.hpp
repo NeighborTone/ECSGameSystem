@@ -75,6 +75,7 @@ namespace Event
 			[[maybe_unused]]const std::string& key_) override
 		{
 			DOUT << Message::PlayerAttack << std::endl;
+			PlaySoundMem(ResourceManager::GetSound().GetHandle("atkSE"), DX_PLAYTYPE_BACK);
 			ECS::AttackCollisionBoxArcheType()(Vec2(0,0));
 		}
 	};

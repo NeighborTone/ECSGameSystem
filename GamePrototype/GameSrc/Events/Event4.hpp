@@ -142,7 +142,7 @@ namespace Event
 					}
 					else
 					{
-						player->GetComponent<ECS::Velocity>().val = 5.f;
+						player->GetComponent<ECS::Velocity>().val.x = 5.f;
 					}
 				}
 			}
@@ -174,7 +174,7 @@ namespace Event
 			{
 				DOUT << Message::SideHit << std::endl;
 
-				player->GetComponent<ECS::Velocity>().val = 0;
+				player->GetComponent<ECS::Velocity>().val.x = 0;
 			}
 		}
 	};

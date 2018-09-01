@@ -11,41 +11,81 @@
 #include "../GameSrc/Camera/Camera.hpp"
 #include <atltime.h>
 
+void Game::ResourceLoad()
+{
+	//リソースクラスのテスト
+	ResourceManager::GetGraph().LoadDiv("Resource/Act_Chara2.png", "PlayerGraphic", 48, 6, 8, 64, 64);
+	ResourceManager::GetGraph().Load("Resource/map2.png", "back");
+	ResourceManager::GetGraph().Load("Resource/back.png", "bg1");
+	ResourceManager::GetGraph().Load("Resource/gothic-castle-tileset.png", "map1");
+	ResourceManager::GetGraph().Load("Resource/gothic-castle-background.png", "map2");
+	ResourceManager::GetSound().Load("Resource/Town.wav", "bgm");
+	ResourceManager::GetSound().Load("Resource/タマネギ.ogg", "hitSE");
+	ResourceManager::GetSound().Load("Resource/slashing04.ogg", "atkSE");
+}
+
 Game::Game()
 {
 	{
 		//処理負荷を計測する
 		ProcessingTime<std::chrono::milliseconds> time;
 		pManager = &ECS::EcsSystem::GetManager();
-		//リソースクラスのテスト
-		ResourceManager::GetGraph().LoadDiv("Resource/Act_Chara2.png", "PlayerGraphic", 48, 6, 8, 64, 64);
-		ResourceManager::GetGraph().Load("Resource/map2.png", "back");
-		ResourceManager::GetGraph().Load("Resource/gothic-castle-tileset.png", "map1");
-		ResourceManager::GetSound().Load("Resource/Grass.wav", "bgm");
-		ResourceManager::GetSound().Load("Resource/タマネギ.ogg", "hitSE");
-		//PlaySoundMem(ResourceManager::GetSound().GetHandle("bgm"), DX_PLAYTYPE_LOOP);
+		ResourceLoad();
+		PlaySoundMem(ResourceManager::GetSound().GetHandle("bgm"), DX_PLAYTYPE_LOOP);
+		ChangeVolumeSoundMem(255, ResourceManager::GetSound().GetHandle("bgm"));
 		//ArcheType(原型)から作る
+		ECS::BackArcheType()("bg1");
 		player = ECS::PlayerArcheType()(100.f, 500.f, "PlayerGraphic");
-		//ground[0] = ECS::GreenBoxArcheType()(0.f, 600.f, 1280.f, 100.f);
-		ground[1] = ECS::GreenBoxArcheType()(300.f, 480.f, 80.f, 64.f);
-		ground[2] = ECS::GreenBoxArcheType()(400.f, 380.f, 80.f, 10.f);
-		ground[3] = ECS::GreenBoxArcheType()(500.f, 280.f, 80.f, 10.f);
-		ground[4] = ECS::GreenBoxArcheType()(600.f, 180.f, 80.f, 10.f);
 		for (auto i(0u); i < std::size(hitBox); ++i)
 		{
 			hitBox[i] = ECS::BlueBoxArcheType()((float)i * 100.f + 200.f, 532.f);
 		}
-		back = ECS::BackArcheType()();
-		for (int i = 0; i < 400; ++i)
+		for (int i = 0; i < 100; ++i)
 		{
 			ECS::MapArcheType()("map1",(float)i * 32.f, 632.f, 0, 0, 32, 32);
 			
 		}
-		for (int i = 0; i < 200; ++i)
+		for (int i = 0; i < 50; ++i)
 		{
 			ECS::MapArcheType()("map1", (float)i * 64.f, 664.f, 96, 0, 64, 64);
 		}
-	
+		for (int i = 0; i < 50; ++i)
+		{
+			if (i % 2 == 0)
+			{
+				ECS::MapBackArcheType()("map2", (float)i * 64.f, 472.f, 160, 0, 80, 160);
+			}
+			else
+			{
+				ECS::MapBackArcheType()("map2", (float)i * 64.f, 472.f, 240, 0, 80, 160);
+			}
+		}
+		for (int i = 0; i < 60; ++i)
+		{
+			if (i == 0 || i == 1 )continue;
+			if (i == 2 || i == 3)
+			{
+				ECS::MapArcheType()("map1", (float)i * 32.f, 472.f, 0, 0, 32, 32);
+			}
+			else
+			{
+				ECS::MapArcheType()("map1", (float)i * 32.f, 408.f, 0, 0, 32, 32);
+			}
+		
+		}
+		for (int i = 0; i < 30; ++i)
+		{
+			if (i == 0 )continue;
+			if (i == 1)
+			{
+				ECS::MapArcheType()("map1", 64.f, 472.f, 96, 0, 64, 64);
+			}
+			else
+			{
+				ECS::MapArcheType()("map1", (float)i * 64.f, 440.f, 96, 0, 64, 64);
+			}
+		}
+
 	}
 }
 
@@ -84,7 +124,6 @@ void Game::EventUpDate()
 
 void Game::Update()
 {
-	const auto& backs = pManager->GetEntitiesByGroup(ENTITY_GROUP::Back);
 	const auto& enemys = pManager->GetEntitiesByGroup(ENTITY_GROUP::Enemy);
 	const auto& players = pManager->GetEntitiesByGroup(ENTITY_GROUP::Player);
 	const auto& maps = pManager->GetEntitiesByGroup(ENTITY_GROUP::Map);
@@ -93,7 +132,6 @@ void Game::Update()
 
 	pManager->Refresh();
 	EventUpDate();
-	for (const auto& it : backs) { it->UpDate(); }
 	switch (Game::GetScene().Current())
 	{
 	case Scene::Reset:
@@ -134,7 +172,6 @@ void Game::Draw()
 	switch (Game::GetScene().Current())
 	{
 	case Scene::Title:
-		back->Draw2D();
 		break;
 	case Scene::Pause:
 		[[fallthrough]];
@@ -142,7 +179,6 @@ void Game::Draw()
 		pManager->OrderByDraw(ENTITY_GROUP::Max);
 		break;
 	case Scene::End:
-		back->Draw2D();
 		break;
 	}
 #ifdef _DEBUG
@@ -150,20 +186,20 @@ void Game::Draw()
 	switch (Game::GetScene().Current())
 	{
 	case Scene::Title:
-		DrawFormatString(0, 0, 0, "Title");
+		DrawFormatString(0, 0, 0xffffffffu, "Title");
 		break;
 	case Scene::Pause:
-		DrawFormatString(50, 0, 0, "Puase");
+		DrawFormatString(50, 0, 0xffffffffu, "Puase");
 		[[fallthrough]];
 	case Scene::Play:
-		DrawFormatString(0, 0, 0, "Play");
-		DrawFormatString(200, 630, 0, "左右キーで移動\nZキーで攻撃\nスペースでジャンプ");
+		DrawFormatString(0, 0, 0xffffffffu, "Play");
+		DrawFormatString(200, 630, 0xffffffffu, "左右キーで移動\nZキーで攻撃\nスペースでジャンプ");
 		break;
 	case Scene::End:
-		DrawFormatString(0, 0, 0, "End");
+		DrawFormatString(0, 0, 0xffffffffu, "End");
 		break;
 	}
-	DrawFormatString(0, 400, 0,
+	DrawFormatString(0, 400, 0xffffffffu,
 		R"(Xキーで次のシーン
 Rキーでリセット
 ポーズ中にZキーでエンドシーン)");
