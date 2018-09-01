@@ -14,7 +14,7 @@ private:
 		float bottomEnd;
 	public:
 		Singleton(const Vec2& position, const Vec2& size_)
-			:pos(position), rightEnd(size_.x),bottomEnd(size_.y) {}
+			:pos(position), rightEnd(size_.x),bottomEnd(size_.y),size(size_) {}
 	public:
 		Vec2 pos;
 		Vec2 size;

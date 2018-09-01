@@ -9,7 +9,7 @@ namespace ECS
 	public:
 		ECS::Entity* operator()(const float x, const float y, const char* name) override
 		{
-			auto& entity(ECS::EcsSystem::GetManager().AddEntity());
+			auto& entity(ECS::EcsSystem::GetManager().AddEntityAddTag("Player"));
 			entity.AddComponent<ECS::Transform>().SetPosition(x, y);
 			entity.AddComponent<ECS::Physics>().SetVelocity(5.f, 5.f);
 			entity.GetComponent<ECS::Gravity>().val = 9.8f / 60 / 60;
@@ -43,9 +43,10 @@ namespace ECS
 	public:
 		ECS::Entity* operator()(const float x, const float y, const float w, const float h) override
 		{
-			auto& entity(ECS::EcsSystem::GetManager().AddEntity());
+			auto& entity(ECS::EcsSystem::GetManager().AddEntityAddTag("GreenMap"));
 			entity.AddComponent<ECS::Transform>().SetPosition(x, y);
 			entity.AddComponent<ECS::HitBase>(w, h).SetColor(10, 128, 20);
+			entity.GetComponent<ECS::HitBase>().FillEnable();
 			entity.AddGroup(ENTITY_GROUP::Map);
 			return &entity;
 		}
@@ -58,7 +59,7 @@ namespace ECS
 	public:
 		ECS::Entity* operator()(const float x, const float y) override
 		{
-			auto& entity(ECS::EcsSystem::GetManager().AddEntity());
+			auto& entity(ECS::EcsSystem::GetManager().AddEntityAddTag("BlueEnemy"));
 			entity.AddComponent<ECS::Transform>().SetPosition(x, y);
 			entity.AddComponent<ECS::HitBase>(64.f, 64.f).SetColor(0, 0, 255);
 			entity.GetComponent<ECS::HitBase>().FillEnable();
@@ -67,20 +68,6 @@ namespace ECS
 		}
 	};
 
-	//$Test$
-	//à¯êîÇ…éwíËÇµÇΩêFÇÃî†ÇÃå¥å^(ArcheType)ÇçÏÇÈÅB
-	class ColorBoxArcheType : public ECS::IArcheType<int, int, int>
-	{
-	public:
-		ECS::Entity* operator()(const int r, const int g, int b) override
-		{
-			auto& entity(ECS::EcsSystem::GetManager().AddEntity());
-			entity.AddComponent<ECS::Transform>().SetPosition(300.f, 300.f);
-			entity.AddComponent<ECS::HitBase>(20.f, 20.f).SetColor(r, g, b);
-			entity.AddGroup(ENTITY_GROUP::Enemy);
-			return &entity;
-		}
-	};
 	class AttackCollisionBoxArcheType : public ECS::IArcheType<const Vec2&>
 	{
 	public:
@@ -102,7 +89,7 @@ namespace ECS
 			auto& entity(ECS::EcsSystem::GetManager().AddEntityAddTag("back"));
 			entity.AddComponent<ECS::Position>();
 			entity.AddComponent<ECS::SimpleDraw>("back");
-			//entity.AddGroup(ENTITY_GROUP::PlayerAttackCollision);
+			entity.AddGroup(ENTITY_GROUP::Back);
 			return &entity;
 		}
 	};
@@ -111,7 +98,7 @@ namespace ECS
 	public:
 		ECS::Entity* operator()(const char* name,const float x, const float y, const int srcX, const int srcY,const int w, const int h) override
 		{
-			auto& entity(ECS::EcsSystem::GetManager().AddEntity());
+			auto& entity(ECS::EcsSystem::GetManager().AddEntityAddTag("Map"));
 			entity.AddComponent<ECS::Position>(x,y);
 			entity.AddComponent<ECS::RectDraw>(name, srcX, srcY, w, h);
 			entity.AddComponent<ECS::HitBase>(static_cast<float>(w), static_cast<float>(h)).DrawDisable();

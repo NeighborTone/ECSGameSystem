@@ -21,4 +21,15 @@ struct Collision
 		}
 		return false;
 	}
+	static bool BoxAndBox(const Vec2& b1Pos, const Vec2& b1Size, const Vec2& b2Pos, const Vec2& b2Size)
+	{
+		if (b1Pos.x < b2Pos.x + b2Size.x &&
+			b2Pos.x < b1Pos.x + b1Size.x &&
+			b1Pos.y < b2Pos.y + b2Size.y &&
+			b2Pos.y < b1Pos.y + b1Size.y)
+		{
+			return true;
+		}
+		return false;
+	}
 };

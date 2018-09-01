@@ -222,6 +222,18 @@ namespace ECS
 		{
 			for (auto& e : entityes) e->Draw3D();
 		}
+		//グループごとの描画を登録順に行う
+		void OrderByDraw(const size_t TheMaximumNumberOfRegistered)
+		{
+			for (auto i(0u); i < TheMaximumNumberOfRegistered; ++i)
+			{
+				const auto& entity = groupedEntities[i];
+				for (const auto& e : entity)
+				{
+					e->Draw2D();
+				}
+			}
+		}
 		void Draw2D()
 		{
 			for (auto& e : entityes)
@@ -263,8 +275,7 @@ namespace ECS
 			groupedEntities[group].emplace_back(pEntity);
 		}
 		//Entityを生成しそのポインタを返す
-		//Managerをシングルトンにしない限り不要
-		//これはEntity間通信を柔軟にしようとした結果であるため場合によって使い分ける
+		//タグを設定しておくとデバッグするときに追いかけやすい
 		Entity& AddEntityAddTag(const std::string& tag)
 		{
 			Entity* e = new Entity(*this);

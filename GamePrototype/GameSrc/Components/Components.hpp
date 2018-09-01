@@ -5,6 +5,7 @@
 #include "../ResourceManager/ResourceManager.hpp"
 #include "../GameSrc/Utility/Counter.hpp"
 #include "../Input/Input.hpp"
+#include "../Collision/Collision.hpp"
 #include <DxLib.h>
 namespace ECS
 {
@@ -515,7 +516,15 @@ namespace ECS
 			if (ResourceManager::GetGraph().IsExistenceHandle(name))
 			{
 				auto convert = pos->val - Camera::Get().pos;
-				DrawRectGraphF(convert.x, convert.y, rect.left, rect.right, rect.bottom, rect.top,ResourceManager::GetGraph().GetHandle(name), true);
+				//スクリーン外は描画しない
+				if (Collision::BoxAndBox(
+					Vec2(0,0),
+					Vec2(System::SCREEN_WIDIH,System::SCREEN_HEIGHT), 
+					convert,
+					Vec2(float(rect.bottom), float(rect.top))))
+				{
+					DrawRectGraphF(convert.x, convert.y, rect.left, rect.right, rect.bottom, rect.top, ResourceManager::GetGraph().GetHandle(name), true);
+				}
 			}
 		}
 	};
@@ -577,7 +586,6 @@ namespace ECS
 		{
 			index = index_;
 		}
-
 	};
 
 	class InputJump : public Component
@@ -774,34 +782,34 @@ namespace ECS
 			if (inputJump->IsLanding() && inputMove->IsMoved())
 			{
 				state->val = AnimationState::State::Run;
-				DrawFormatString(300, 40, 0xffffffffu, "Run");
+				//DrawFormatString(300, 40, 0xffffffffu, "Run");
 			}
 			else if (!inputJump->IsLanding() &&
 				inputJump->IsJumping() &&
 				!inputAttack->IsAttacking())
 			{
 				state->val = AnimationState::State::Jump;
-				DrawFormatString(300, 60, 0xffffffffu, "Jump");
+				//DrawFormatString(300, 60, 0xffffffffu, "Jump");
 			}
 			else if (!inputJump->IsLanding() && inputJump->IsFalling())
 			{
 				state->val = AnimationState::State::Fall;
-				DrawFormatString(300, 60, 0xffffffffu, "Fall");
+				//DrawFormatString(300, 60, 0xffffffffu, "Fall");
 			}
 			else
 			{
 				state->val = AnimationState::State::Idol;
-				if (!inputAttack->IsAttacking())
-				{
-					DrawFormatString(300, 80, 0xffffffffu, "Idol");
-				}
+				//if (!inputAttack->IsAttacking())
+				//{
+				//	DrawFormatString(300, 80, 0xffffffffu, "Idol");
+				//}
 			}
 			if (state->val != AnimationState::State::Jump &&
 				state->val != AnimationState::State::Fall &&
 				inputAttack->IsAttacking())
 			{
 				state->val = AnimationState::State::Attack;
-				DrawFormatString(300, 20, 0xffffffffu, "Attack");
+				//DrawFormatString(300, 20, 0xffffffffu, "Attack");
 			}
 		}
 	public:

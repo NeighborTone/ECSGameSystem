@@ -30,8 +30,12 @@ public:
 	{
 		while (system->IsOk() && !PushEscape())
 		{
-			Update();
-			Draw();
+			{
+				//ˆ—•‰‰×‚ğŒv‘ª‚·‚é
+				ProcessingTime<std::chrono::milliseconds> time;
+				Update();
+				Draw();
+			}
 		}
 	}
 };

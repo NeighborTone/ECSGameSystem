@@ -36,12 +36,12 @@ Game::Game()
 			hitBox[i] = ECS::BlueBoxArcheType()((float)i * 100.f + 200.f, 532.f);
 		}
 		back = ECS::BackArcheType()();
-		for (int i = 0; i < 40; ++i)
+		for (int i = 0; i < 400; ++i)
 		{
 			ECS::MapArcheType()("map1",(float)i * 32.f, 632.f, 0, 0, 32, 32);
 			
 		}
-		for (int i = 0; i < 20; ++i)
+		for (int i = 0; i < 200; ++i)
 		{
 			ECS::MapArcheType()("map1", (float)i * 64.f, 664.f, 96, 0, 64, 64);
 		}
@@ -51,21 +51,25 @@ Game::Game()
 
 void Game::ResetGame()
 {
-	//pManager->Initialize();
-	const auto& b = pManager->GetEntitiesByGroup(ENTITY_GROUP::Enemy);
-	const auto& p = pManager->GetEntitiesByGroup(ENTITY_GROUP::Player);
-	const auto& c = pManager->GetEntitiesByGroup(ENTITY_GROUP::PlayerAttackCollision);
-	for (auto& it : p) { it->Destroy(); }
-	for (auto& it : b) { it->Destroy(); }
-	for (auto& it : c) { it->Destroy(); }
-
-	player = ECS::PlayerArcheType()(100.f, 500.f, "PlayerGraphic");
-	for (auto i(0u); i < std::size(hitBox); ++i)
 	{
-		hitBox[i] = ECS::BlueBoxArcheType()((float)i * 100.f + 200.f, 532.f);
-	}
+		//処理負荷を計測する
+		ProcessingTime<std::chrono::milliseconds> time;
+		pManager->Initialize();
+		const auto& b = pManager->GetEntitiesByGroup(ENTITY_GROUP::Enemy);
+		const auto& p = pManager->GetEntitiesByGroup(ENTITY_GROUP::Player);
+		const auto& c = pManager->GetEntitiesByGroup(ENTITY_GROUP::PlayerAttackCollision);
+		for (auto& it : p) { it->Destroy(); }
+		for (auto& it : b) { it->Destroy(); }
+		for (auto& it : c) { it->Destroy(); }
 
-	isReset = true;
+		player = ECS::PlayerArcheType()(100.f, 500.f, "PlayerGraphic");
+		for (auto i(0u); i < std::size(hitBox); ++i)
+		{
+			hitBox[i] = ECS::BlueBoxArcheType()((float)i * 100.f + 200.f, 532.f);
+		}
+
+		isReset = true;
+	}
 }
 
 void Game::EventUpDate()
@@ -80,14 +84,16 @@ void Game::EventUpDate()
 
 void Game::Update()
 {
-	const auto& b = pManager->GetEntitiesByGroup(ENTITY_GROUP::Enemy);
-	const auto& p = pManager->GetEntitiesByGroup(ENTITY_GROUP::Player);
-	const auto& m = pManager->GetEntitiesByGroup(ENTITY_GROUP::Map);
-	const auto& c = pManager->GetEntitiesByGroup(ENTITY_GROUP::PlayerAttackCollision);
+	const auto& backs = pManager->GetEntitiesByGroup(ENTITY_GROUP::Back);
+	const auto& enemys = pManager->GetEntitiesByGroup(ENTITY_GROUP::Enemy);
+	const auto& players = pManager->GetEntitiesByGroup(ENTITY_GROUP::Player);
+	const auto& maps = pManager->GetEntitiesByGroup(ENTITY_GROUP::Map);
+	const auto& collisions = pManager->GetEntitiesByGroup(ENTITY_GROUP::PlayerAttackCollision);
 	Input::Get().Update_Key();
 
 	pManager->Refresh();
 	EventUpDate();
+	for (const auto& it : backs) { it->UpDate(); }
 	switch (Game::GetScene().Current())
 	{
 	case Scene::Reset:
@@ -100,7 +106,6 @@ void Game::Update()
 			ResetGame();
 			isReset = true;
 		}
-		back->UpDate();
 		break;
 	case Scene::Play:
 		//カメラの制限
@@ -109,30 +114,39 @@ void Game::Update()
 		Camera::Get().UpDate();
 		Camera::Get().SetTopEnd(0);
 		Camera::Get().SetBottomEnd(720);
-		for (const auto& it : m) { it->UpDate(); }
-		for (const auto& it : p) { it->UpDate(); }
-		for (const auto& it : c) { it->UpDate(); }
-		for (const auto& it : b) { it->UpDate(); }
-		back->UpDate();
+
+		for (const auto& it : maps) { it->UpDate(); }
+		for (const auto& it : players) { it->UpDate(); }
+		for (const auto& it : collisions) { it->UpDate(); }
+		for (const auto& it : enemys) { it->UpDate(); }
 		isReset = false;
 		break;
 	case Scene::Pause:
-		back->UpDate();
 		break;
 	case Scene::End:
-		back->UpDate();
 		break;
 	}
 }
 
 void Game::Draw()
 {
-	//pManager->Draw2D();
-	const auto& m = pManager->GetEntitiesByGroup(ENTITY_GROUP::Map);
-	const auto& b = pManager->GetEntitiesByGroup(ENTITY_GROUP::Enemy);
-	const auto& p = pManager->GetEntitiesByGroup(ENTITY_GROUP::Player);
-	const auto& c = pManager->GetEntitiesByGroup(ENTITY_GROUP::PlayerAttackCollision);
-	back->Draw2D();
+	
+	switch (Game::GetScene().Current())
+	{
+	case Scene::Title:
+		back->Draw2D();
+		break;
+	case Scene::Pause:
+		[[fallthrough]];
+	case Scene::Play:
+		pManager->OrderByDraw(ENTITY_GROUP::Max);
+		break;
+	case Scene::End:
+		back->Draw2D();
+		break;
+	}
+#ifdef _DEBUG
+	//デバッグ用
 	switch (Game::GetScene().Current())
 	{
 	case Scene::Title:
@@ -140,11 +154,8 @@ void Game::Draw()
 		break;
 	case Scene::Pause:
 		DrawFormatString(50, 0, 0, "Puase");
+		[[fallthrough]];
 	case Scene::Play:
-		for (const auto& it : m) { it->Draw2D(); }
-		for (const auto& it : b) { it->Draw2D(); }
-		for (const auto& it : c) { it->Draw2D(); }
-		for (const auto& it : p) { it->Draw2D(); }
 		DrawFormatString(0, 0, 0, "Play");
 		DrawFormatString(200, 630, 0, "左右キーで移動\nZキーで攻撃\nスペースでジャンプ");
 		break;
@@ -156,4 +167,5 @@ void Game::Draw()
 		R"(Xキーで次のシーン
 Rキーでリセット
 ポーズ中にZキーでエンドシーン)");
+#endif
 }

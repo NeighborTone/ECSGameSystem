@@ -18,7 +18,7 @@ public:
 private:
 	ECS::EntityManager* pManager;
 	ECS::Entity* player;
-	ECS::Entity* hitBox[5];
+	ECS::Entity* hitBox[10];
 	ECS::Entity* ground[5];
 	ECS::Entity* back;
 	bool isReset = true;
@@ -49,10 +49,13 @@ private:
 public:
 	enum class GameGroup : ECS::Group
 	{
-		Player,
-		Enemy,
+		//番号が大きいほど手前に描画される(1uから指定する)
+		Back = 1u,
 		Map,
+		Enemy,
+		Player,
 		PlayerAttackCollision,
+		Max,
 	};
 	Game();
 	//Entityの初期化処理を明示的に呼び出します
