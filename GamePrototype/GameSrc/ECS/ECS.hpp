@@ -36,7 +36,7 @@ namespace ECS
 	class Component
 	{
 	private:
-		friend class Entity;	//Entity‚É‚æ‚Á‚ÄE‚³‚ê‚½‚¢‚Ì‚Å‚±‚¤‚È‚Á‚½
+		friend class Entity;	//Entityã«ã‚ˆã£ã¦æ®ºã•ã‚ŒãŸã„ã®ã§ã“ã†ãªã£ãŸ
 		bool active = true;
 		void DeleteThis()
 		{
@@ -53,7 +53,7 @@ namespace ECS
 		virtual void Draw3D() {};
 		virtual void Draw2D() {};
 		virtual ~Component() {}
-		//‚±‚ÌƒRƒ“ƒ|[ƒlƒ“ƒg‚ª¶‚«‚Ä‚¢‚é‚©•Ô‚µ‚Ü‚·
+		//ã“ã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆãŒç”Ÿãã¦ã„ã‚‹ã‹è¿”ã—ã¾ã™
 		virtual bool IsActive() const final { return active; }
 
 	};
@@ -87,12 +87,12 @@ namespace ECS
 	public:
 
 		Entity(EntityManager& manager) : manager_(manager) {}
-		//‚±‚ÌEntity‚É‚Â‚¢‚Ä‚¢‚éComponent‚Ì‰Šú‰»ˆ—‚ğs‚¢‚Ü‚·
+		//ã“ã®Entityã«ã¤ã„ã¦ã„ã‚‹Componentã®åˆæœŸåŒ–å‡¦ç†ã‚’è¡Œã„ã¾ã™
 		void Initialize()
 		{
 			for (auto& c : components) c->Initialize();
 		}
-		//‚±‚ÌEntity‚É‚Â‚¢‚Ä‚¢‚éComponent‚ÌXVˆ—‚ğs‚¢‚Ü‚·
+		//ã“ã®Entityã«ã¤ã„ã¦ã„ã‚‹Componentã®æ›´æ–°å‡¦ç†ã‚’è¡Œã„ã¾ã™
 		void UpDate()
 		{
 			RefreshComponent();
@@ -105,12 +105,12 @@ namespace ECS
 				c->UpDate();
 			}
 		}
-		//‚±‚ÌEntity‚É‚Â‚¢‚Ä‚¢‚éComponent‚Ì3D•`‰æˆ—‚ğs‚¢‚Ü‚·
+		//ã“ã®Entityã«ã¤ã„ã¦ã„ã‚‹Componentã®3Dæç”»å‡¦ç†ã‚’è¡Œã„ã¾ã™
 		void Draw3D()
 		{
 			for (auto& c : components) c->Draw3D();
 		}
-		//‚±‚ÌEntity‚É‚Â‚¢‚Ä‚¢‚éComponent‚Ì2D•`‰æˆ—‚ğs‚¢‚Ü‚·
+		//ã“ã®Entityã«ã¤ã„ã¦ã„ã‚‹Componentã®2Dæç”»å‡¦ç†ã‚’è¡Œã„ã¾ã™
 		void Draw2D()
 		{
 			for (auto& c : components)
@@ -122,44 +122,44 @@ namespace ECS
 				c->Draw2D();
 			}
 		}
-		//Entity‚Ì¶‘¶ó‘Ô‚ğ•Ô‚µ‚Ü‚·
+		//ã®ç”Ÿå­˜çŠ¶æ…‹ã‚’è¿”ã—ã¾ã™
 		bool IsActive() const { return active; }
-		//Entity‚ğE‚µ‚Ü‚·
+		//Entityã‚’æ®ºã—ã¾ã™
 		void Destroy() 
 		{
 			active = false; 
 		}
-		//Entity‚ªw’è‚µ‚½ƒOƒ‹[ƒv‚É“o˜^‚³‚ê‚Ä‚¢‚é‚©•Ô‚µ‚Ü‚·
+		//EntityãŒæŒ‡å®šã—ãŸã‚°ãƒ«ãƒ¼ãƒ—ã«ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹ã‹è¿”ã—ã¾ã™
 		bool HasGroup(Group group) const noexcept
 		{
 			return groupBitSet[group];
 		}
-		//Entity‚ğƒOƒ‹[ƒv‚É“o˜^‚µ‚Ü‚·
+		//Entityã‚’ã‚°ãƒ«ãƒ¼ãƒ—ã«ç™»éŒ²ã—ã¾ã™
 		void AddGroup(Group group) noexcept;
-		//Entity‚ğƒOƒ‹[ƒv‚©‚çÁ‚µ‚Ü‚·
+		//Entityã‚’ã‚°ãƒ«ãƒ¼ãƒ—ã‹ã‚‰æ¶ˆã—ã¾ã™
 		void DeleteGroup(Group group) noexcept
 		{
 			groupBitSet[group] = false;
 		}
-		//Entity‚Éw’è‚µ‚½Component‚ª‚ ‚é‚©•Ô‚µ‚Ü‚·
+		//Entityã«æŒ‡å®šã—ãŸComponentãŒã‚ã‚‹ã‹è¿”ã—ã¾ã™
 		template <typename T> bool HasComponent() const 
 		{
 			return componentBitSet[GetComponentTypeID<T>()];
 		}
 
-		//ƒRƒ“ƒ|[ƒlƒ“ƒg‚Ì’Ç‰Áƒƒ\ƒbƒh
-		//’Ç‰Á‚³‚ê‚½‚çƒRƒ“ƒ|[ƒlƒ“ƒg‚Ì‰Šú‰»ƒƒ\ƒbƒh‚ªŒÄ‚Î‚ê‚Ü‚·
+		//ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®è¿½åŠ ãƒ¡ã‚½ãƒƒãƒ‰
+		//è¿½åŠ ã•ã‚ŒãŸã‚‰ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®åˆæœŸåŒ–ãƒ¡ã‚½ãƒƒãƒ‰ãŒå‘¼ã°ã‚Œã¾ã™
 		template <typename T, typename... TArgs> T& AddComponent(TArgs&&... args)
 		{
-			//d•¡‚Í‹–‰Â‚µ‚È‚¢
+			//é‡è¤‡ã¯è¨±å¯ã—ãªã„
 			if (HasComponent<T>())
 			{
 				return GetComponent<T>();
 			}
 			//Tips: std::forward
-			//ŠÖ”ƒeƒ“ƒvƒŒ[ƒg‚Ìˆø”‚ğ“]‘—‚·‚éB
-			//‚±‚ÌŠÖ”‚ÍA“n‚³‚ê‚½ˆø”‚ğT&&Œ^‚ÉƒLƒƒƒXƒg‚µ‚Ä•Ô‚·Bi’FT‚ª¶•Ó’lQÆ‚Ìê‡‚É‚ÍT&&‚à¶•Ó’lQÆ‚É‚È‚èA‚»‚êˆÈŠO‚Ìê‡‚ÉT&&‚Í‰E•Ó’lQÆ‚É‚È‚éBj
-			//‚±‚ÌŠÖ”‚ÍAå‚É“]‘—ŠÖ”iforwarding functionj‚ÌÀ‘•‚ğ’Pƒ‰»‚·‚é–Ú“I‚Åg‚í‚ê‚éF
+			//é–¢æ•°ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã®å¼•æ•°ã‚’è»¢é€ã™ã‚‹ã€‚
+			//ã“ã®é–¢æ•°ã¯ã€æ¸¡ã•ã‚ŒãŸå¼•æ•°ã‚’T&&å‹ã«ã‚­ãƒ£ã‚¹ãƒˆã—ã¦è¿”ã™ã€‚ï¼ˆæ³¨ï¼šTãŒå·¦è¾ºå€¤å‚ç…§ã®å ´åˆã«ã¯T&&ã‚‚å·¦è¾ºå€¤å‚ç…§ã«ãªã‚Šã€ãã‚Œä»¥å¤–ã®å ´åˆã«T&&ã¯å³è¾ºå€¤å‚ç…§ã«ãªã‚‹ã€‚ï¼‰
+			//ã“ã®é–¢æ•°ã¯ã€ä¸»ã«è»¢é€é–¢æ•°ï¼ˆforwarding functionï¼‰ã®å®Ÿè£…ã‚’å˜ç´”åŒ–ã™ã‚‹ç›®çš„ã§ä½¿ã‚ã‚Œã‚‹ï¼š
 			T* c(new T(std::forward<TArgs>(args)...));
 			c->entity = this;
 			std::unique_ptr<Component> uPtr(c);
@@ -172,7 +172,7 @@ namespace ECS
 			return *c;
 		}
 
-		//w’è‚µ‚½ƒRƒ“ƒ|[ƒlƒ“ƒg‚ğíœ‚µ‚Ü‚·
+		//æŒ‡å®šã—ãŸã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’å‰Šé™¤ã—ã¾ã™
 		template<typename T> void DeleteComponent() noexcept
 		{
 			if (HasComponent<T>())
@@ -182,7 +182,7 @@ namespace ECS
 			}
 		}
 
-		//“o˜^‚µ‚½ƒRƒ“ƒ|[ƒlƒ“ƒg‚ğæ“¾‚µ‚Ü‚·
+		//ç™»éŒ²ã—ãŸã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’å–å¾—ã—ã¾ã™
 		template<typename T> T& GetComponent() const
 		{
 			assert(HasComponent<T>());
@@ -196,7 +196,7 @@ namespace ECS
 		}
 	};
 
-	//Entity“Š‡ƒNƒ‰ƒX
+	//Entityçµ±æ‹¬ã‚¯ãƒ©ã‚¹
 	class EntityManager
 	{
 	private:
@@ -222,7 +222,7 @@ namespace ECS
 		{
 			for (auto& e : entityes) e->Draw3D();
 		}
-		//ƒOƒ‹[ƒv‚²‚Æ‚Ì•`‰æ‚ğ“o˜^‡‚És‚¤
+		//ã‚°ãƒ«ãƒ¼ãƒ—ã”ã¨ã®æç”»ã‚’ç™»éŒ²é †ã«è¡Œã†
 		void OrderByDraw(const size_t TheMaximumNumberOfRegistered)
 		{
 			for (auto i(0u); i < TheMaximumNumberOfRegistered; ++i)
@@ -241,7 +241,7 @@ namespace ECS
 				e->Draw2D();
 			}
 		}
-		//ƒAƒNƒeƒBƒu‚Å‚È‚¢‚à‚Ì‚ğíœ‚µ‚Ü‚·
+		//ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã§ãªã„ã‚‚ã®ã‚’å‰Šé™¤ã—ã¾ã™
 		void Refresh()
 		{
 			for (auto i(0u); i < MaxGroups; ++i)
@@ -264,18 +264,18 @@ namespace ECS
 			}),
 				std::end(entityes));
 		}
-		//w’è‚µ‚½ƒOƒ‹[ƒv‚É“o˜^‚³‚ê‚Ä‚¢‚éEntity’B‚ğ•Ô‚µ‚Ü‚·
+		//æŒ‡å®šã—ãŸã‚°ãƒ«ãƒ¼ãƒ—ã«ç™»éŒ²ã•ã‚Œã¦ã„ã‚‹Entityé”ã‚’è¿”ã—ã¾ã™
 		std::vector<Entity*>& GetEntitiesByGroup(Group group)
 		{
 			return groupedEntities[group];
 		}
-		//Entity‚ğw’è‚µ‚½ƒOƒ‹[ƒv‚É“o˜^‚µ‚Ü‚·
+		//Entityã‚’æŒ‡å®šã—ãŸã‚°ãƒ«ãƒ¼ãƒ—ã«ç™»éŒ²ã—ã¾ã™
 		void AddToGroup(Entity* pEntity, Group group)
 		{
 			groupedEntities[group].emplace_back(pEntity);
 		}
-		//Entity‚ğ¶¬‚µ‚»‚Ìƒ|ƒCƒ“ƒ^‚ğ•Ô‚·
-		//ƒ^ƒO‚ğİ’è‚µ‚Ä‚¨‚­‚ÆƒfƒoƒbƒO‚·‚é‚Æ‚«‚É’Ç‚¢‚©‚¯‚â‚·‚¢
+		//Entityã‚’ç”Ÿæˆã—ãã®ãƒã‚¤ãƒ³ã‚¿ã‚’è¿”ã™
+		//ã‚¿ã‚°ã‚’è¨­å®šã—ã¦ãŠãã¨ãƒ‡ãƒãƒƒã‚°ã™ã‚‹ã¨ãã«è¿½ã„ã‹ã‘ã‚„ã™ã„
 		Entity& AddEntityAddTag(const std::string& tag)
 		{
 			Entity* e = new Entity(*this);
@@ -284,8 +284,8 @@ namespace ECS
 			entityes.back()->tag = tag;
 			return *e;
 		}
-		//Entity‚ğ¶¬‚µ‚»‚Ìƒ|ƒCƒ“ƒ^‚ğ•Ô‚·
-		//Šî–{“I‚É‚±‚¿‚ç‚ğg‚¤
+		//Entityã‚’ç”Ÿæˆã—ãã®ãƒã‚¤ãƒ³ã‚¿ã‚’è¿”ã™
+		//åŸºæœ¬çš„ã«ã“ã¡ã‚‰ã‚’ä½¿ã†
 		Entity& AddEntity()
 		{
 			Entity* e = new Entity(*this);
@@ -294,8 +294,8 @@ namespace ECS
 			entityes.back()->tag = "";
 			return *e;
 		}
-		//ƒ^ƒO‚ğw’è‚µ‚»‚ÌEntity‚ğæ“¾‚·‚é
-		//¸”s‚µ‚½ê‡—‚¿‚é
+		//ã‚¿ã‚°ã‚’æŒ‡å®šã—ãã®Entityã‚’å–å¾—ã™ã‚‹
+		//å¤±æ•—ã—ãŸå ´åˆè½ã¡ã‚‹
 		Entity& GetEntity(const std::string& tag)
 		{
 			constexpr bool  NOT_FOUND_TAG = false;
@@ -307,7 +307,7 @@ namespace ECS
 					return *it;
 				}
 			}
-			//æ“¾‚É¸”s‚µ‚½ê‡‚Í‚Æ‚è‚ ‚¦‚¸—‚Æ‚·
+			//å–å¾—ã«å¤±æ•—ã—ãŸå ´åˆã¯ã¨ã‚Šã‚ãˆãšè½ã¨ã™
 			assert(NOT_FOUND_TAG);
 			return *entityes[0];
 		}
@@ -323,7 +323,7 @@ namespace ECS
 		}
 	};
 
-	//Entity‚ÌŒ´Œ^‚ğì‚é‚½‚ß‚ÌƒCƒ“ƒ^[ƒtƒF[ƒX
+	//Entityã®åŸå‹ã‚’ä½œã‚‹ãŸã‚ã®ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
 	template<class... Args>
 	class IArcheType
 	{
