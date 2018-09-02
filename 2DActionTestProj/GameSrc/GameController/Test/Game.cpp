@@ -9,6 +9,7 @@
 #include "../GameSrc/ResourceManager/ResourceManager.hpp"
 #include "../../Collision/Collision.hpp"
 #include "../GameSrc/Camera/Camera.hpp"
+#include <fstream>
 #include <atltime.h>
 
 void Game::ResourceLoad()
@@ -17,7 +18,7 @@ void Game::ResourceLoad()
 	ResourceManager::GetGraph().LoadDiv("Resource/Act_Chara2.png", "PlayerGraphic", 48, 6, 8, 64, 64);
 	ResourceManager::GetGraph().Load("Resource/map2.png", "back");
 	ResourceManager::GetGraph().Load("Resource/back.png", "bg1");
-	ResourceManager::GetGraph().Load("Resource/gothic-castle-tileset.png", "map1");
+	ResourceManager::GetGraph().Load("Resource/retroTile_A4.png", "map1");
 	ResourceManager::GetGraph().Load("Resource/gothic-castle-background.png", "map2");
 	ResourceManager::GetSound().Load("Resource/Town.wav", "bgm");
 	ResourceManager::GetSound().Load("Resource/タマネギ.ogg", "hitSE");
@@ -34,58 +35,53 @@ Game::Game()
 		PlaySoundMem(ResourceManager::GetSound().GetHandle("bgm"), DX_PLAYTYPE_LOOP);
 		ChangeVolumeSoundMem(255, ResourceManager::GetSound().GetHandle("bgm"));
 		//ArcheType(原型)から作る
-		ECS::BackArcheType()("bg1");
-		player = ECS::PlayerArcheType()(100.f, 500.f, "PlayerGraphic");
+		//ECS::BackArcheType()("bg1");
+		player = ECS::PlayerArcheType()(100.f, 800.f, "PlayerGraphic");
 		for (auto i(0u); i < std::size(hitBox); ++i)
 		{
-			hitBox[i] = ECS::BlueBoxArcheType()((float)i * 100.f + 200.f, 532.f);
+			hitBox[i] = ECS::BlueBoxArcheType()((float)i * 100.f + 200.f, 800.f);
 		}
-		for (int i = 0; i < 100; ++i)
+	
+		//テストに成功したので後でクラス化する
 		{
-			ECS::MapArcheType()("map1",(float)i * 32.f, 632.f, 0, 0, 32, 32);
-			
+			//ファイルを開く
+			std::ifstream fin("Resource/untitled.csv");
+			int arr[15][50];
+			int mapx[50];
+			int mapy[15];
+			constexpr int ChipSize = 64;
+			//マップ配列サイズの読み込み
+			//よこ3200
+			//たて960
+			//64x64
+			//配列データの読み込み
+			for (int y = 0; y < 15; ++y)
+			{
+				for (int x = 0; x < 50; ++x)
+				{
+					fin >> arr[y][x];
+				}
+			}
+			fin.close();
+			//座標
+			for (int y = 0; y < 15; ++y)
+			{
+				mapy[y] = y * ChipSize;
+			}
+			for (int x = 0; x < 50; ++x)
+			{
+				mapx[x] = x * ChipSize;
+			}
+			for (int y = 0; y < 15; ++y)
+			{
+				for (int x = 0; x < 50; ++x)
+				{
+					ECS::TileMapArcheType()("map1", (float)mapx[x], (float)mapy[y], arr[y][x]);
+				}
+			}
 		}
-		for (int i = 0; i < 50; ++i)
-		{
-			ECS::MapArcheType()("map1", (float)i * 64.f, 664.f, 96, 0, 64, 64);
-		}
-		for (int i = 0; i < 50; ++i)
-		{
-			if (i % 2 == 0)
-			{
-				ECS::MapBackArcheType()("map2", (float)i * 64.f, 472.f, 160, 0, 80, 160);
-			}
-			else
-			{
-				ECS::MapBackArcheType()("map2", (float)i * 64.f, 472.f, 240, 0, 80, 160);
-			}
-		}
-		for (int i = 0; i < 60; ++i)
-		{
-			if (i == 0 || i == 1 ) continue;
-			if (i == 2 || i == 3)
-			{
-				ECS::MapArcheType()("map1", (float)i * 32.f, 472.f, 0, 0, 32, 32);
-			}
-			else
-			{
-				ECS::MapArcheType()("map1", (float)i * 32.f, 408.f, 0, 0, 32, 32);
-			}
 		
-		}
-		for (int i = 0; i < 30; ++i)
-		{
-			if (i == 0 )continue;
-			if (i == 1)
-			{
-				ECS::MapArcheType()("map1", 64.f, 472.f, 96, 0, 64, 64);
-			}
-			else
-			{
-				ECS::MapArcheType()("map1", (float)i * 64.f, 440.f, 96, 0, 64, 64);
-			}
-		}
-
+		
 	}
 }
 
@@ -105,7 +101,7 @@ void Game::ResetGame()
 		player = ECS::PlayerArcheType()(100.f, 500.f, "PlayerGraphic");
 		for (auto i(0u); i < std::size(hitBox); ++i)
 		{
-			hitBox[i] = ECS::BlueBoxArcheType()((float)i * 100.f + 200.f, 532.f);
+			hitBox[i] = ECS::BlueBoxArcheType()((float)i * 100.f + 200.f, 800.f);
 		}
 
 		isReset = true;
@@ -147,12 +143,12 @@ void Game::Update()
 		break;
 	case Scene::Play:
 		//カメラの制限
-		Camera::Get().pos.x = player->GetComponent<ECS::Position>().val.x - 400;
+		Camera::Get().pos.x = player->GetComponent<ECS::Position>().val.x - 600;
 		//Camera::Get().pos.y = player->GetComponent<ECS::Position>().val.y - 480;
 		Camera::Get().UpDate();
 		Camera::Get().SetTopEnd(0);
 		Camera::Get().SetBottomEnd(720);
-
+		Camera::Get().SetRightEnd(1640);
 		for (const auto& it : maps) { it->UpDate(); }
 		for (const auto& it : players) { it->UpDate(); }
 		for (const auto& it : collisions) { it->UpDate(); }

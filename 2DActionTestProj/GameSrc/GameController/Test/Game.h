@@ -18,7 +18,7 @@ public:
 private:
 	ECS::EntityManager* pManager;
 	ECS::Entity* player;
-	ECS::Entity* hitBox[10];
+	ECS::Entity* hitBox[6];
 	bool isReset = true;
 	void EventUpDate(); 
 	void ResourceLoad();

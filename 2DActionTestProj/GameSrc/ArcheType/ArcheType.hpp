@@ -106,6 +106,30 @@ namespace ECS
 			return &entity;
 		}
 	};
+	class TileMapArcheType : public ECS::IArcheType<const char*, float, float,int>
+	{
+	public:
+		ECS::Entity* operator()(const char* name, const float x, const float y,const int num) override
+		{
+			ECS::Entity* entity = nullptr;
+			switch (num)
+			{
+			case-1:
+
+				break;
+			case 54:
+				entity = &ECS::EcsSystem::GetManager().AddEntityAddTag("Map");
+				entity->AddComponent<ECS::Position>(x, y);
+				entity->AddComponent<ECS::RectDraw>(name, 384, 384, 64, 64);
+				entity->AddComponent<ECS::HitBase>(static_cast<float>(64), static_cast<float>(64)).DrawDisable();
+				entity->AddGroup(ENTITY_GROUP::Map);
+				break;
+			}
+			
+			
+			return entity;
+		}
+	};
 	class MapBackArcheType : public ECS::IArcheType<const char*, float, float, int, int, int, int>
 	{
 	public:

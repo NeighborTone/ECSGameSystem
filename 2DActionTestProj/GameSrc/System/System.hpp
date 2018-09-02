@@ -44,8 +44,8 @@ public:
 		return *instance;
 	}
 	static constexpr int
-		SCREEN_WIDIH = 1280,
-		SCREEN_HEIGHT = 720;
+		SCREEN_WIDIH = 1560,
+		SCREEN_HEIGHT = 960;
 	System()
 	{
 		SystemInit();
