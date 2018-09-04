@@ -58,12 +58,15 @@ namespace ECS
 
 	};
 
+	//データはメソッドを持たない
 	struct ComponentData : public Component
 	{
-
+		virtual void UpDate() final {};
+		virtual void Draw3D() final {};
+		virtual void Draw2D() final {};
 	};
 
-	class Entity
+	class Entity final
 	{
 	private:
 		friend class EntityManager;
@@ -197,7 +200,7 @@ namespace ECS
 	};
 
 	//Entity統括クラス
-	class EntityManager
+	class EntityManager final
 	{
 	private:
 		std::vector<std::unique_ptr<Entity>> entityes;
