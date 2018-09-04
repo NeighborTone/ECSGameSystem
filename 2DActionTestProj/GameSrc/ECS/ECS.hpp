@@ -122,7 +122,7 @@ namespace ECS
 				c->Draw2D();
 			}
 		}
-		//の生存状態を返します
+		//生存状態を返します
 		bool IsActive() const { return active; }
 		//Entityを殺します
 		void Destroy() 
@@ -313,6 +313,7 @@ namespace ECS
 		}
 	};
 
+	//シングルトンにしたらどうなるか試したが、全く不要であった
 	class EcsSystem
 	{
 	public:
