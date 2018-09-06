@@ -396,7 +396,7 @@ namespace ECS
 				}
 				else if (dir->val == Direction::Dir::L)
 				{
-				
+
 					DrawBoxAA(
 						convert2.x,
 						convert2.y,
@@ -404,8 +404,8 @@ namespace ECS
 						convert2.y + h(),
 						color, isFill, 2);
 				}
-				
-				
+
+
 			}
 		}
 		void SetColor(const int r, const int g, const int b) override
@@ -423,7 +423,7 @@ namespace ECS
 		void DrawDisable() override { isDraw = false; }
 		float w() const override { return W; }
 		float h() const override { return H; }
-		float x() const override 
+		float x() const override
 		{
 			if (dir->val == Direction::Dir::R)
 			{
@@ -495,12 +495,8 @@ namespace ECS
 		RECT rect;
 		std::string name;
 	public:
-		RectDraw(const char* name_,const int srcX, const int srcY, const int w, const int h)
+		RectDraw(const char* name_, const int srcX, const int srcY, const int w, const int h)
 		{
-			if (!ResourceManager::GetGraph().IsExistenceHandle(name_))
-			{
-				assert(false);
-			}
 			rect.left = srcX;
 			rect.right = srcY;
 			rect.bottom = w;
@@ -513,19 +509,18 @@ namespace ECS
 		}
 		void Draw2D() override
 		{
-			if (ResourceManager::GetGraph().IsExistenceHandle(name))
+
+			auto convert = pos->val - Camera::Get().pos;
+			//スクリーン外は描画しない
+			if (Collision::BoxAndBox(
+				Vec2(0, 0),
+				Vec2(System::SCREEN_WIDIH, System::SCREEN_HEIGHT),
+				convert,
+				Vec2(float(rect.bottom), float(rect.top))))
 			{
-				auto convert = pos->val - Camera::Get().pos;
-				//スクリーン外は描画しない
-				if (Collision::BoxAndBox(
-					Vec2(0,0),
-					Vec2(System::SCREEN_WIDIH,System::SCREEN_HEIGHT), 
-					convert,
-					Vec2(float(rect.bottom), float(rect.top))))
-				{
-					DrawRectGraphF(convert.x, convert.y, rect.left, rect.right, rect.bottom, rect.top, ResourceManager::GetGraph().GetHandle(name), true);
-				}
+				DrawRectGraphF(convert.x, convert.y, rect.left, rect.right, rect.bottom, rect.top, ResourceManager::GetGraph().GetHandle(name), true);
 			}
+
 		}
 	};
 	//Animation
@@ -540,10 +535,6 @@ namespace ECS
 	public:
 		AnimationDraw(const char* name_)
 		{
-			if (!ResourceManager::GetGraph().IsExistenceDivHandle(name_))
-			{
-				assert(false);
-			}
 			name = name_;
 		}
 		void Initialize() override
@@ -564,21 +555,18 @@ namespace ECS
 			{
 				isTurn = true;
 			}
-			
+
 		}
 		void Draw2D() override
 		{
-			if (ResourceManager::GetGraph().IsExistenceDivHandle(name))
+			auto convert = pos->val - Camera::Get().pos;
+			if (!isTurn)
 			{
-				auto convert = pos->val - Camera::Get().pos;
-				if (!isTurn)
-				{
-					DrawGraphF(convert.x, convert.y, ResourceManager::GetGraph().GetDivHandle(name, index), true);
-				}
-				else
-				{
-					DrawTurnGraphF(convert.x, convert.y, ResourceManager::GetGraph().GetDivHandle(name, index), true);
-				}
+				DrawGraphF(convert.x, convert.y, ResourceManager::GetGraph().GetDivHandle(name, index), true);
+			}
+			else
+			{
+				DrawTurnGraphF(convert.x, convert.y, ResourceManager::GetGraph().GetDivHandle(name, index), true);
 			}
 		}
 		//分割画像の要素番号を指定する
@@ -663,7 +651,7 @@ namespace ECS
 		//入力を無効にする
 		void Stop() { isStop = true; }
 		//入力を許可する
-		void GoMove() { isStop = false;	}
+		void GoMove() { isStop = false; }
 		//足元判定をセット
 		void Landing(const bool hit) { isLanding = hit; }
 		//頭上判定をセット
@@ -765,7 +753,7 @@ namespace ECS
 	class PlayerAnimation : public Component
 	{
 	private:
-		AnimationState* state;
+		AnimationState * state;
 		InputAttack* inputAttack;
 		InputMove* inputMove;
 		InputJump* inputJump;

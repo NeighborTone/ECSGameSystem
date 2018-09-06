@@ -37,6 +37,7 @@
     <ClInclude Include="GameSrc\Events\Observer.hpp" />
     <ClInclude Include="GameSrc\GameController\GameMain.hpp" />
     <ClInclude Include="GameSrc\GameController\Test\Game.h" />
+    <ClInclude Include="GameSrc\GameController\Test\MapLoader.hpp" />
     <ClInclude Include="GameSrc\Input\Input.hpp" />
     <ClInclude Include="GameSrc\ResourceManager\ResourceManager.hpp" />
     <ClInclude Include="GameSrc\System\System.hpp" />
@@ -114,6 +115,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BrowseInformation>true</BrowseInformation>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>./DXlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -125,13 +127,17 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
-      <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>./DXlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <Optimization>Disabled</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>./DXlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -158,7 +164,6 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>

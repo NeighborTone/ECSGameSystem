@@ -120,6 +120,9 @@
     <ClInclude Include="GameSrc\Camera\Camera.hpp">
       <Filter>GameSrc\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="GameSrc\GameController\Test\MapLoader.hpp">
+      <Filter>GameSrc\GameController\Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

@@ -11,7 +11,7 @@
 #include "../GameSrc/Camera/Camera.hpp"
 #include <fstream>
 #include <atltime.h>
-
+#include "MapLoader.hpp"
 void Game::ResourceLoad()
 {
 	//リソースクラスのテスト
@@ -41,47 +41,7 @@ Game::Game()
 		{
 			hitBox[i] = ECS::BlueBoxArcheType()((float)i * 100.f + 200.f, 800.f);
 		}
-	
-		//テストに成功したので後でクラス化する
-		{
-			//ファイルを開く
-			std::ifstream fin("Resource/untitled.csv");
-			int arr[15][50];
-			int mapx[50];
-			int mapy[15];
-			constexpr int ChipSize = 64;
-			//マップ配列サイズの読み込み
-			//よこ3200
-			//たて960
-			//64x64
-			//配列データの読み込み
-			for (int y = 0; y < 15; ++y)
-			{
-				for (int x = 0; x < 50; ++x)
-				{
-					fin >> arr[y][x];
-				}
-			}
-			fin.close();
-			//座標
-			for (int y = 0; y < 15; ++y)
-			{
-				mapy[y] = y * ChipSize;
-			}
-			for (int x = 0; x < 50; ++x)
-			{
-				mapx[x] = x * ChipSize;
-			}
-			for (int y = 0; y < 15; ++y)
-			{
-				for (int x = 0; x < 50; ++x)
-				{
-					ECS::TileMapArcheType()("map1", (float)mapx[x], (float)mapy[y], arr[y][x]);
-				}
-			}
-		}
-		
-		
+		MapLoader("Resource/untitled.csv",50,15,64,ECS::TileMapArcheType(),"map1");
 	}
 }
 
