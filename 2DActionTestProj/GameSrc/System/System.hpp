@@ -19,7 +19,7 @@ private:
 		//ウインドウタイトルを変更
 		SetMainWindowText("Game");
 		//画面サイズ変更
-		SetGraphMode(SCREEN_WIDIH, SCREEN_HEIGHT, 32);
+		SetGraphMode(SCREEN_WIDIH, SCREEN_HEIGHT,32);
 		//ウィンドウモード変更
 		ChangeWindowMode(WinMessageBox::IsFullScreen());
 		//XAudio2を使用する(オーディオインターフェースを使用したときに、フルスクルーン時に正しく音が再生されなくなった(要検証))

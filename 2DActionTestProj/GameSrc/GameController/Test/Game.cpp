@@ -103,12 +103,13 @@ void Game::Update()
 		break;
 	case Scene::Play:
 		//カメラの制限
-		Camera::Get().pos.x = player->GetComponent<ECS::Position>().val.x - 600;
-		//Camera::Get().pos.y = player->GetComponent<ECS::Position>().val.y - 480;
+		Camera::Get().pos.x = player->GetComponent<ECS::Position>().val.x - System::SCREEN_WIDIH / 3;
+		Camera::Get().pos.y = 0;
 		Camera::Get().UpDate();
 		Camera::Get().SetTopEnd(0);
-		Camera::Get().SetBottomEnd(720);
+		Camera::Get().SetBottomEnd(System::SCREEN_HEIGHT);
 		Camera::Get().SetRightEnd(1640);
+		Camera::Get().SetLeftEnd(0);
 		for (const auto& it : maps) { it->UpDate(); }
 		for (const auto& it : players) { it->UpDate(); }
 		for (const auto& it : collisions) { it->UpDate(); }
