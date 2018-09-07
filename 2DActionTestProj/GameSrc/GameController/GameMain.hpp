@@ -35,6 +35,7 @@ public:
 				ProcessingTime<std::chrono::milliseconds> time;
 				Update();
 				Draw();
+				System::GetFPS().Wait();
 			}
 		}
 	}
